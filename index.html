@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="hy" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ՎարորդիՏուն․am</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="harcer.js"></script>
+    <script defer src="test.js"></script>
+    <script defer src="supabase-config.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script defer src="supabase-auth.js"></script>
+    <script defer src="data.js"></script>
+    <link rel="icon" href="images/logo-removebg-preview.png" type="image/png">
+
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            50: '#f0fdf4',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            950: '#052e16',
+                            DEFAULT: '#00ff66'
+                        },
+                        darkBg: '#090d0a',
+                        cardBg: '#111813',
+                        cardHover: '#16231a'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Inter & Google Fonts for Armenian support -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #090d0a;
+            color: #f3f4f6;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #090d0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #16a34a;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #22c55e;
+        }
+    </style>
+</head>
+
+<body class="bg-[#090d0a] text-gray-100 min-h-screen flex flex-col selection:bg-neon-500 selection:text-black">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 bg-[#090d0a]/90 backdrop-blur-md border-b border-neon-500/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
+                <!-- <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-400 to-neon-600 flex items-center justify-center shadow-lg shadow-neon-500/30">
+                    <svg class="w-6 h-6 text-black font-extrabold" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div> -->
+                <div>
+                    <a href="#home" onclick="switchPage('home')" class="flex items-center gap-3 group">
+                        <img src="images/logo-removebg-preview.png" alt="Վարորդի Տուն — Պրոֆեսիոնալ Ավտոդպրոց"
+                            class="h-[72px] w-auto max-w-[320px] object-contain group-hover:scale-105 transition-transform">
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden lg:flex flex-1 items-center justify-end space-x-1">
+                <button onclick="switchTab('home')" id="nav-home"
+                    class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200 text-neon-400 bg-neon-500/10 border border-neon-500/30">Գլխավոր</button>
+                <button onclick="switchTab('tests')" id="nav-tests"
+                    class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200 text-gray-300 hover:text-neon-400 hover:bg-neon-500/5">Թեստեր</button>
+                <button onclick="switchTab('thematic')" id="nav-thematic"
+                    class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200 text-gray-300 hover:text-neon-400 hover:bg-neon-500/5">Հարցեր
+                    ըստ թեմաների</button>
+                <button onclick="switchTab('signs')" id="nav-signs"
+                    class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200 text-gray-300 hover:text-neon-400 hover:bg-neon-500/5">Ճանապարհային
+                    նշաններ</button>
+                <button onclick="switchTab('colorTest')" id="nav-colorTest"
+                    class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200 text-gray-300 hover:text-neon-400 hover:bg-neon-500/5">Գունընկալում
+                </button>
+                <button onclick="switchTab('pricing')" id="nav-pricing"
+                    class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200 text-gray-300 hover:text-neon-400 hover:bg-neon-500/5">Գնացուցակ</button>
+                <button onclick="switchTab('about')" id="nav-about"
+                    class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200 text-gray-300 hover:text-neon-400 hover:bg-neon-500/5">Մեր
+                    մասին</button>
+            </nav>
+
+            <!-- CTA button & Mobile menu toggle -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden sm:flex items-center gap-2">
+                    <span id="auth-user-email" class="hidden max-w-36 truncate text-xs text-gray-300"></span>
+                    <button id="auth-open-button" onclick="openAuthModal()"
+                        class="px-3 py-2 rounded-lg bg-neon-400 text-black text-xs font-bold hover:bg-neon-500 transition">
+                        Մուտք / Գրանցում
+                    </button>
+                    <button id="auth-signout-button" onclick="signOutUser()"
+                        class="hidden px-3 py-2 rounded-lg bg-cardHover border border-gray-700 text-gray-300 text-xs font-bold hover:border-red-400 hover:text-red-400 transition">
+                        Դուրս գալ
+                    </button>
+                </div>
+                <!-- <button onclick="switchTab('tests')"
+                    class="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-xl font-bold text-black bg-neon-400 hover:bg-neon-500 shadow-lg shadow-neon-500/20 transition-all duration-200 text-xs">
+                    Թեստեր
+                </button> -->
+                <button onclick="toggleMobileMenu()"
+                    class="lg:hidden p-2.5 rounded-xl bg-cardBg border border-neon-500/20 text-neon-400 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-cardBg border-b border-neon-500/20 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('home'); toggleMobileMenu();"
+                class="block w-full text-left px-4 py-2 rounded-lg font-medium text-gray-200 hover:bg-neon-500/10 hover:text-neon-400 text-sm">Գլխավոր</button>
+            <button onclick="switchTab('tests'); toggleMobileMenu();"
+                class="block w-full text-left px-4 py-2 rounded-lg font-medium text-gray-200 hover:bg-neon-500/10 hover:text-neon-400 text-sm">Թեստեր
+            </button>
+            <button onclick="switchTab('thematic'); toggleMobileMenu();"
+                class="block w-full text-left px-4 py-2 rounded-lg font-medium text-gray-200 hover:bg-neon-500/10 hover:text-neon-400 text-sm">Հարցեր
+                ըստ թեմաների</button>
+            <button onclick="switchTab('signs'); toggleMobileMenu();"
+                class="block w-full text-left px-4 py-2 rounded-lg font-medium text-gray-200 hover:bg-neon-500/10 hover:text-neon-400 text-sm">Ճանապարհային
+                նշաններ</button>
+            <button onclick="switchTab('colorTest'); toggleMobileMenu();"
+                class="block w-full text-left px-4 py-2 rounded-lg font-medium text-gray-200 hover:bg-neon-500/10 hover:text-neon-400 text-sm">Գունընկալման
+                թեստ</button>
+            <button onclick="switchTab('pricing'); toggleMobileMenu();"
+                class="block w-full text-left px-4 py-2 rounded-lg font-medium text-gray-200 hover:bg-neon-500/10 hover:text-neon-400 text-sm">Գնացուցակ</button>
+            <button onclick="switchTab('about'); toggleMobileMenu();"
+                class="block w-full text-left px-4 py-2 rounded-lg font-medium text-gray-200 hover:bg-neon-500/10 hover:text-neon-400 text-sm">Մեր
+                մասին</button>
+            <button id="mobile-auth-open-button" onclick="openAuthModal(); toggleMobileMenu();"
+                class="block w-full text-left px-4 py-2 rounded-lg font-bold text-neon-400 hover:bg-neon-500/10 text-sm">Մուտք / Գրանցում</button>
+            <button id="mobile-auth-signout-button" onclick="signOutUser(); toggleMobileMenu();"
+                class="hidden w-full text-left px-4 py-2 rounded-lg font-bold text-red-400 hover:bg-red-500/10 text-sm">Դուրս գալ</button>
+        </div>
+    </header>
+
+    <div id="auth-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+        role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+        <div class="w-full max-w-md space-y-5 rounded-3xl border border-neon-500/30 bg-cardBg p-6 shadow-2xl">
+            <div class="flex items-center justify-between">
+                <h2 id="auth-modal-title" class="text-xl font-extrabold text-white">Մուտք կամ գրանցում</h2>
+                <button onclick="closeAuthModal()" aria-label="Փակել"
+                    class="rounded-lg px-3 py-1 text-gray-400 hover:text-white">✕</button>
+            </div>
+            <p class="text-sm text-gray-400">Մուտք գործեք՝ ձեր թեստերի առաջընթացը պահպանելու և այլ սարքից շարունակելու համար։</p>
+            <form id="auth-form" class="space-y-3" onsubmit="event.preventDefault(); signInUser();">
+                <label class="block space-y-1 text-sm text-gray-300">
+                    <span>Էլ․ փոստ</span>
+                    <input id="auth-email" type="email" autocomplete="email" required
+                        class="w-full rounded-xl border border-gray-700 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon-400">
+                </label>
+                <label class="block space-y-1 text-sm text-gray-300">
+                    <span>Գաղտնաբառ</span>
+                    <input id="auth-password" type="password" autocomplete="current-password" minlength="6" required
+                        class="w-full rounded-xl border border-gray-700 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon-400">
+                </label>
+                <p id="auth-message" class="hidden text-sm" role="status"></p>
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <button type="submit"
+                        class="rounded-xl bg-neon-400 px-4 py-3 font-bold text-black hover:bg-neon-500">Մուտք գործել</button>
+                    <button type="button" onclick="registerUser()"
+                        class="rounded-xl border border-neon-500/40 bg-neon-500/10 px-4 py-3 font-bold text-neon-400 hover:bg-neon-500/20">Գրանցվել</button>
+                </div>
+            </form>
+            <p id="auth-sync-status" class="text-xs text-gray-500" aria-live="polite"></p>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow">
+
+        <!-- 1. HOME SECTION -->
+        <section id="section-home" class="tab-section py-12 md:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div
+                        class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-neon-500/10 border border-neon-500/30 text-neon-400 text-xs font-semibold tracking-wide uppercase">
+                        <span class="w-2 h-2 rounded-full bg-neon-400 animate-pulse"></span>
+                        <span>Հայաստանի Հանրապետության ՃЕԿ թեստեր և վարորդական դասընթացներ</span>
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+                        Ստացիր վարորդական իրավունք <span
+                            class="bg-gradient-to-r from-neon-400 to-emerald-400 bg-clip-text text-transparent">առաջին
+                            իսկ փորձից</span>
+                    </h1>
+                    <p class="text-lg text-gray-400 leading-relaxed">
+                        Սովորի՛ր վստահ վարել փորձառու հրահանգիչների հետ։ Մեր ավտոդպրոցում դու կստանաս անհրաժեշտ տեսական
+                        գիտելիքներ և գործնական հմտություններ՝ ճանապարհներին վստահ լինելու համար։
+                    </p>
+                    <div
+                        class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
+                        <button onclick="switchTab('tests')"
+                            class="px-8 py-4 rounded-xl font-bold text-black bg-neon-400 hover:bg-neon-500 shadow-xl shadow-neon-500/25 transition-all duration-200 text-center">
+                            Անցնել թեստերը
+                        </button>
+                        <button onclick="switchTab('colorTest')"
+                            class="px-8 py-4 rounded-xl font-bold text-neon-400 bg-cardBg hover:bg-cardHover border border-neon-500/30 transition-all duration-200 text-center">
+                            Գունընկալման ստուգում
+                        </button>
+                    </div>
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-3 gap-4 pt-8 border-t border-gray-800">
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-neon-400">60</div>
+                            <div class="text-xs sm:text-sm text-gray-400 font-medium">Պաշտոնական թեստ</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-neon-400">1100+</div>
+                            <div class="text-xs sm:text-sm text-gray-400 font-medium">Ակտուալ հարց</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-neon-400">98%</div>
+                            <div class="text-xs sm:text-sm text-gray-400 font-medium">Հաջողության ցուցանիշ</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero App Preview -->
+                <div class="relative mx-auto flex w-full max-w-xl items-center justify-center">
+                    <div class="absolute inset-10 rounded-full bg-neon-500/20 blur-3xl"></div>
+                    <img src="images/Neon Green Driving Test Dashboard-Photoroom.png"
+                        alt="Վարորդի տուն հավելվածի թեստերի էջը iPhone-ում"
+                        class="relative z-10 mx-auto max-h-[680px] w-full object-contain drop-shadow-2xl transition-transform duration-300"
+                        loading="eager" decoding="async">
+                </div>
+            </div>
+
+            <section id="section-pricing" class="scroll-mt-24 pt-16 space-y-12">
+                <div class="text-center space-y-4 max-w-3xl mx-auto">
+                    <div
+                        class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-neon-500/10 border border-neon-500/30 text-neon-400 text-xs font-semibold uppercase tracking-wider">
+                        <span>Մատչելի և արդյունավետ փաթեթներ</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Ուսուցման Գնացուցակ
+                    </h2>
+                    <p class="text-gray-400 text-sm">Ընտրեք ձեզ հարմար փաթեթը և սկսեք վարորդական դասընթացները
+                        «Վարորդի
+                        տուն»
+                        ավտոդպրոցում:</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div
+                        class="bg-cardBg border border-gray-800 rounded-3xl p-8 shadow-xl flex flex-col justify-between space-y-6 hover:border-neon-500/40 transition">
+                        <div class="space-y-4">
+                            <div
+                                class="inline-block px-3 py-1 rounded-lg bg-gray-800 text-gray-300 text-xs font-bold uppercase">
+                                Ստանդարտ</div>
+                            <h3 class="text-2xl font-extrabold text-white">«Տեսական» փաթեթ</h3>
+                            <p class="text-xs text-gray-400">Հարմար է միայն տեսական գիտելիքները ստանալու և քննության
+                                պատրաստվելու համար:</p>
+                            <div class="text-3xl font-extrabold text-neon-400 pt-2">35,000 <span
+                                    class="text-sm font-normal text-gray-400">դրամ</span></div>
+                            <ul class="space-y-3 text-sm text-gray-300 pt-4 border-t border-gray-800">
+                                <li class="flex items-center space-x-3">✓ <span>Ամբողջական տեսական դասընթաց (20
+                                        ժամ)</span>
+                                </li>
+                                <li class="flex items-center space-x-3">✓ <span>Մուտք բոլոր 60 թեստերին և
+                                        թեմաներին</span>
+                                </li>
+                                <li class="flex items-center space-x-3">✓ <span>Անսահմանափակ փորձեր առցանց</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <button onclick="openEnrollModal('Ստանդարտ (Տեսական)')"
+                            class="w-full py-3.5 rounded-xl bg-cardHover border border-neon-500/30 text-neon-400 font-bold hover:bg-neon-500/10 transition">
+                            Ընտրել փաթեթը
+                        </button>
+                    </div>
+
+                    <div
+                        class="bg-cardBg border-2 border-neon-500 rounded-3xl p-8 shadow-2xl flex flex-col justify-between space-y-6 relative transform md:-translate-y-2">
+                        <div
+                            class="absolute -top-3.5 left-1/2 transform -translate-x-1/2 bg-neon-400 text-black px-4 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide shadow-lg">
+                            Ամենահայտնի
+                        </div>
+                        <div class="space-y-4">
+                            <div
+                                class="inline-block px-3 py-1 rounded-lg bg-neon-500/20 text-neon-400 text-xs font-bold uppercase">
+                                Լիարժեք</div>
+                            <h3 class="text-2xl font-extrabold text-white">«Վարորդ Բ» փաթեթ</h3>
+                            <p class="text-xs text-gray-400">Ամենաշատ ընտրվող փաթեթը՝ տեսություն և գործնական վարում
+                                մինչև
+                                քննություն:</p>
+                            <div class="text-3xl font-extrabold text-neon-400 pt-2">120,000 <span
+                                    class="text-sm font-normal text-gray-400">դրամ</span></div>
+                            <ul class="space-y-3 text-sm text-gray-300 pt-4 border-t border-gray-800">
+                                <li class="flex items-center space-x-3">✓ <span>Ամբողջական տեսական
+                                        դասընթացներ</span>
+                                </li>
+                                <li class="flex items-center space-x-3">✓ <span>60 պաշտոնական թեստեր և նշանների
+                                        բազա</span>
+                                </li>
+                                <li class="flex items-center space-x-3">✓ <span>20 գործնական վարման դաս</span></li>
+                                <li class="flex items-center space-x-3">✓ <span>Ուղեկցում ՃՈ քննությանը</span></li>
+                            </ul>
+                        </div>
+                        <button onclick="openEnrollModal('Վարորդ Բ (Լիարժեք)')"
+                            class="w-full py-3.5 rounded-xl bg-neon-400 hover:bg-neon-500 text-black font-extrabold shadow-lg shadow-neon-500/20 transition">
+                            Ընտրել փաթեթը
+                        </button>
+                    </div>
+
+                    <div
+                        class="bg-cardBg border border-gray-800 rounded-3xl p-8 shadow-xl flex flex-col justify-between space-y-6 hover:border-neon-500/40 transition">
+                        <div class="space-y-4">
+                            <div
+                                class="inline-block px-3 py-1 rounded-lg bg-gray-800 text-gray-300 text-xs font-bold uppercase">
+                                Անհատական</div>
+                            <h3 class="text-2xl font-extrabold text-white">«VIP Պրեմիում» փաթեթ</h3>
+                            <p class="text-xs text-gray-400">Անհատական մոտեցում, հարմարեցված գրաֆիկ և լրացուցիչ
+                                վարման
+                                ժամեր:</p>
+                            <div class="text-3xl font-extrabold text-neon-400 pt-2">180,000 <span
+                                    class="text-sm font-normal text-gray-400">դրամ</span></div>
+                            <ul class="space-y-3 text-sm text-gray-300 pt-4 border-t border-gray-800">
+                                <li class="flex items-center space-x-3">✓ <span>Անհատական տեսական ուսուցում</span>
+                                </li>
+                                <li class="flex items-center space-x-3">✓ <span>VIP մուտք բոլոր թեստերին և
+                                        բազային</span>
+                                </li>
+                                <li class="flex items-center space-x-3">✓ <span>30 գործնական վարման դաս նոր
+                                        մեքենաներով</span></li>
+                            </ul>
+                        </div>
+                        <button onclick="openEnrollModal('VIP Պրեմիում')"
+                            class="w-full py-3.5 rounded-xl bg-cardHover border border-neon-500/30 text-neon-400 font-bold hover:bg-neon-500/10 transition">
+                            Ընտրել փաթեթը
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- 2. TESTS SECTION -->
+        <section id="section-tests" class="tab-section hidden py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <!-- Test Selection Grid View -->
+            <div id="tests-selector-view" class="space-y-8">
+                <div class="space-y-4 rounded-3xl border border-neon-500/30 bg-cardBg p-5 sm:p-7 shadow-xl">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-white">Ընդհանուր առաջընթաց</h2>
+                            <p id="overall-test-progress-caption" class="mt-1 text-xs text-gray-400">60 թեստից</p>
+                        </div>
+                        <div class="flex flex-wrap gap-x-5 gap-y-2 text-sm font-bold">
+                            <span class="text-neon-400">Հաջող՝ <span id="overall-tests-passed">0</span></span>
+                            <span class="text-red-400">Չհաջողված՝ <span id="overall-tests-failed">0</span></span>
+                            <span class="text-gray-400">Մնացել է՝ <span id="overall-tests-remaining">60</span></span>
+                        </div>
+                    </div>
+                    <div id="overall-test-progress-bar" class="flex h-3 overflow-hidden rounded-full bg-gray-700"
+                        role="progressbar" aria-label="60 թեստերի ընդհանուր առաջընթաց" aria-valuemin="0"
+                        aria-valuemax="60" aria-valuenow="0">
+                        <div id="overall-tests-passed-bar" class="h-full bg-neon-400 transition-all"
+                            style="width: 0%"></div>
+                        <div id="overall-tests-failed-bar" class="h-full bg-red-500 transition-all"
+                            style="width: 0%"></div>
+                    </div>
+                    <p id="tests-progress-account-note" class="text-xs text-gray-500">Առաջընթացը պահվում է այս սարքում։ Մուտք գործեք՝ ձեր հաշվում այն պահպանելու համար։</p>
+                </div>
+
+                <div
+                    class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-gray-800 pb-6">
+                    <div>
+                        <h2 class="text-3xl font-extrabold tracking-tight text-white">Քննական Թեստեր</h2>
+                        <p class="text-gray-400 text-sm mt-1">Ընտրեք թեստը և ստուգեք ձեր գիտելիքները readpolice.am
+                            համակարգին լիովին համապատասխան:</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span
+                            class="px-3 py-1.5 rounded-lg bg-neon-500/10 border border-neon-500/30 text-neon-400 text-xs font-semibold">
+                            Յուրաքանչյուրը՝ 20 հարց
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Grid of 60 tests -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
+                    id="tests-grid-container">
+                    <!-- Dynamic buttons generated via JS -->
+                </div>
+            </div>
+
+            <!-- Active Test Interface View -->
+            <div id="active-test-view" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="rounded-2xl border border-neon-500/30 bg-cardBg p-4 sm:p-5 shadow-xl">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <h3 class="font-bold text-white">Թեստի առաջընթացը</h3>
+                        <div class="flex gap-4 text-sm font-bold">
+                            <span class="text-neon-400">Դրական՝ <span id="test-history-passed">0</span></span>
+                            <span class="text-red-400">Բացասական՝ <span id="test-history-failed">0</span></span>
+                        </div>
+                    </div>
+                    <div class="mt-3 h-2 overflow-hidden rounded-full bg-gray-700">
+                        <div id="test-history-progress" class="h-full rounded-full bg-neon-400 transition-all"
+                            style="width: 0%" role="progressbar" aria-label="Թեստի հաջող փորձերի բաժին"
+                            aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+                    </div>
+                </div>
+
+                <!-- Test Header Bar -->
+                <div
+                    class="bg-cardBg border border-neon-500/30 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="backToTestsList()"
+                            class="px-3.5 py-2 rounded-xl bg-cardHover border border-neon-500/20 text-neon-400 text-sm font-bold hover:bg-neon-500/10 transition">
+                            ← Թեստերի ցանկ
+                        </button>
+                        <div>
+                            <h3 id="active-test-title" class="text-lg font-bold text-white">Թեստ #1</h3>
+                            <p class="text-xs text-gray-400">ՃԵԿ պաշտոնական հարցաշար</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-6">
+                        <div class="text-right">
+                            <div id="test-timer" class="text-xl font-mono font-extrabold text-neon-400">30:00</div>
+                            <div class="text-[10px] text-gray-400 uppercase tracking-wider">Մնացած ժամանակ</div>
+                        </div>
+                        <div class="px-4 py-2 rounded-xl bg-neon-500/10 border border-neon-500/30 text-neon-400 font-mono font-bold text-sm"
+                            id="question-progress-indicator">
+                            Հարց 1 / 20
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Card -->
+                <div
+                    class="bg-cardBg border border-neon-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-8 relative overflow-hidden">
+                    <!-- Medical Badge if 20th question -->
+                    <div id="medical-badge"
+                        class="hidden absolute top-0 right-0 bg-red-500/20 border-b border-l border-red-500/40 text-red-400 text-xs font-bold px-4 py-1.5 rounded-bl-2xl">
+                        🏥 Բժշկական առաջին օգնություն (Հարց 20)
+                    </div>
+
+                    <!-- Question text -->
+                    <div class="space-y-3 pt-2">
+                        <!-- <div class="text-xs font-bold uppercase tracking-wider text-neon-400"
+                            id="question-category-label">Ճանապարհային նշաններ</div> -->
+                        <h4 id="question-text" class="text-lg sm:text-xl font-bold text-gray-100 leading-relaxed">
+                            Հարցի տեքստը կբեռնվի այստեղ...
+                        </h4>
+                    </div>
+
+                    <!-- Optional Question Image / Sign Placeholder -->
+                    <div id="question-image-container"
+                        class="hidden flex justify-center rounded-2xl bg-black/40 p-3 sm:p-5">
+                        <div id="question-svg-graphic" class="flex w-full max-w-5xl items-center justify-center">
+                        </div>
+                    </div>
+
+                    <!-- Options list -->
+                    <div class="space-y-3" id="options-container"></div>
+
+                    <!-- Navigation Footer inside test -->
+                    <div class="flex items-center justify-between pt-6 border-t border-gray-800">
+                        <button id="prev-btn" onclick="prevQuestion()"
+                            class="px-5 py-2.5 rounded-xl bg-cardHover border border-gray-700 text-gray-300 font-semibold text-sm hover:border-neon-500/40 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                            Նախորդը
+                        </button>
+                        <button id="next-btn" onclick="nextQuestion()"
+                            class="px-6 py-2.5 rounded-xl bg-neon-400 hover:bg-neon-500 text-black font-extrabold text-sm shadow-lg shadow-neon-500/20 transition disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-neon-400">
+                            Հաջորդը →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Results View -->
+            <div id="test-results-view" class="hidden max-w-4xl mx-auto space-y-8">
+                <div
+                    class="bg-cardBg border border-neon-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6 relative overflow-hidden">
+                    <div
+                        class="absolute -right-16 -top-16 w-48 h-48 bg-neon-500/10 rounded-full blur-3xl pointer-events-none">
+                    </div>
+                    <div id="result-icon-badge"
+                        class="w-20 h-20 mx-auto rounded-2xl flex items-center justify-center text-4xl shadow-xl">🏆
+                    </div>
+                    <div class="space-y-2">
+                        <h3 id="result-status-title" class="text-3xl font-extrabold text-white">Թեստավորումն Ավարտված է
+                        </h3>
+                        <p id="result-status-subtitle" class="text-gray-400 text-sm">Թեստի արդյունքները:</p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                        <button onclick="backToTestsList()"
+                            class="w-full sm:w-auto px-6 py-3 rounded-xl bg-neon-400 hover:bg-neon-500 text-black font-extrabold text-sm shadow-lg shadow-neon-500/20 transition">
+                            Վերադառնալ թեստերի ցանկ
+                        </button>
+                        <button onclick="restartCurrentTest()"
+                            class="w-full sm:w-auto px-6 py-3 rounded-xl bg-cardHover border border-neon-500/30 text-neon-400 font-bold text-sm hover:bg-neon-500/10 transition">
+                            Կրկնել այս թեստը
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto pt-4">
+                        <div class="bg-black/40 border border-gray-800 rounded-2xl p-4">
+                            <div class="text-3xl font-extrabold text-neon-400" id="result-score-number">18/20</div>
+                            <div class="text-xs text-gray-400 mt-1">Ճիշտ պատասխաններ</div>
+                        </div>
+                        <div class="bg-black/40 border border-gray-800 rounded-2xl p-4">
+                            <div class="text-3xl font-extrabold text-gray-200" id="result-percentage">90%</div>
+                            <div class="text-xs text-gray-400 mt-1">Արդյունավետություն</div>
+                        </div>
+                        <div class="bg-black/40 border border-gray-800 rounded-2xl p-4">
+                            <div class="text-2xl font-extrabold" id="result-pass-fail-badge">Քննված է ✓</div>
+                            <div class="text-xs text-gray-400 mt-1">Պահանջ՝ 18+ ճիշտ</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="bg-cardBg border border-neon-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+                    <h4
+                        class="text-xl font-bold text-white border-b border-gray-800 pb-4 flex items-center justify-between">
+                        <span>📖 Բոլոր հարցերի վերլուծություն և սխալների ստուգում</span>
+                        <span class="text-xs font-normal text-gray-400">Ճիշտ պատասխանները նշված են կանաչով</span>
+                    </h4>
+                    <div class="space-y-6" id="review-questions-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. THEMATIC QUESTIONS SECTION (10 Groups) -->
+        <section id="section-thematic"
+            class="tab-section hidden py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+            <div class="border-b border-gray-800 pb-6">
+                <h2 class="text-3xl font-extrabold tracking-tight text-white">Հարցեր ըստ 10 Թեմատիկ Խմբերի</h2>
+                <p class="text-gray-400 text-sm mt-1">Ընտրեք թեման և ուսումնասիրեք համապատասխան հարցերը առանձին
+                    բաժիններով:</p>
+            </div>
+
+            <!-- 1. ԽՄԲԵՐԻ ՑԱՆՑԸ (Առանց սրա էջը դատարկ էր մնում) -->
+            <div id="thematic-groups-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!--  JavaScript-ն ինքն է այստեղ լցնում 10 խմբերի քարտերը -->
+            </div>
+
+            <!-- 2. ՀԱՐՑԵՐԻ ՊՐԱԿՏԻԿԱՅԻ ՎԻՒԵՒ -->
+            <div id="thematic-practice-view" class="hidden max-w-4xl mx-auto space-y-6">
+                <div
+                    class="bg-cardBg border border-neon-500/30 rounded-2xl p-6 flex items-center justify-between shadow-xl">
+                    <div class="space-y-1">
+                        <button onclick="backToThematicGroups()"
+                            class="text-neon-400 text-xs font-bold hover:underline mb-2 block">← Վերադառնալ
+                            խմբերին</button>
+                        <h3 id="thematic-group-title" class="text-xl font-bold text-white">Խումբ</h3>
+                    </div>
+                    <div class="px-4 py-2 rounded-xl bg-neon-500/10 border border-neon-500/30 text-neon-400 font-mono font-bold text-sm"
+                        id="thematic-progress-indicator">
+                        Հարց 1 / 147
+                    </div>
+                </div>
+
+                <div class="bg-cardBg border border-neon-500/30 rounded-3xl p-8 space-y-6 shadow-2xl">
+                    <!-- Նկարի բլոկ -->
+                    <div id="thematic-img-box"
+                        class="hidden flex justify-center py-2 bg-black/40 rounded-2xl border border-gray-800">
+                        <img id="thematic-img" src="" alt="Հարցի նկար"
+                            class="max-h-[70vh] max-w-full object-contain rounded-xl border border-neon-500/30">
+                    </div>
+
+                    <h4 id="thematic-q-text" class="text-lg font-bold text-white leading-relaxed">Հարց...</h4>
+
+                    <!-- Պատասխանների կոնտեյներ -->
+                    <div id="thematic-options-container" class="space-y-3"></div>
+
+                    <div id="thematic-feedback" class="p-4 rounded-xl hidden text-sm font-semibold"></div>
+
+                    <div class="flex justify-between pt-4 border-t border-gray-800">
+                        <button onclick="prevThematicQuestion()" id="thematic-prev-btn"
+                            class="px-5 py-2.5 rounded-xl bg-cardHover border border-gray-700 text-gray-300 font-semibold text-sm">Նախորդը</button>
+                        <button onclick="nextThematicQuestion()" id="thematic-next-btn"
+                            class="px-6 py-2.5 rounded-xl bg-neon-400 hover:bg-neon-500 text-black font-extrabold text-sm">Հաջորդը
+                            →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. ԱՐԴՅՈՒՆՔՆԵՐԻ ԷԿՐԱՆ -->
+            <div id="thematic-results-view"
+                class="hidden max-w-2xl mx-auto space-y-6 text-center bg-cardBg border border-neon-500/30 rounded-3xl p-8 shadow-2xl">
+                <div
+                    class="w-20 h-20 mx-auto rounded-2xl bg-neon-500/10 border border-neon-500/30 flex items-center justify-center text-4xl text-neon-400">
+                    📊</div>
+                <div class="space-y-2">
+                    <h3 class="text-2xl font-extrabold text-white">Թեմատիկ Թեստն Ավարտված է</h3>
+                    <p class="text-gray-400 text-sm">Ձեր արդյունքները տվյալ խմբի համար</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pt-2">
+                    <div class="bg-black/40 border border-neon-500/30 rounded-2xl p-4">
+                        <div id="res-correct-count" class="text-3xl font-extrabold text-neon-400">0</div>
+                        <div class="text-xs text-gray-400 mt-1">Ճիշտ պատասխաններ</div>
+                    </div>
+                    <div class="bg-black/40 border border-red-500/30 rounded-2xl p-4">
+                        <div id="res-wrong-count" class="text-3xl font-extrabold text-red-400">0</div>
+                        <div class="text-xs text-gray-400 mt-1">Սխալ պատասխաններ</div>
+                    </div>
+                </div>
+
+                <button onclick="backToThematicGroupsFromResults()"
+                    class="w-full py-3.5 rounded-xl bg-neon-400 hover:bg-neon-500 text-black font-extrabold text-sm shadow-lg transition">
+                    Վերադառնալ խմբերի ցանկ
+                </button>
+            </div>
+        </section>
+
+        <!-- 4. ROAD SIGNS SECTION -->
+        <section id="section-signs" class="tab-section hidden py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+            <div
+                class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-gray-800 pb-6">
+                <div>
+                    <h2 class="text-3xl font-extrabold tracking-tight text-white">Ճանապարհային Նշաններ</h2>
+                    <p class="text-gray-400 text-sm mt-1">Ճանապարհային նշանների պատկերազարդ կատալոգ՝ խմբավորված ըստ
+                        նշանակության:</p>
+                </div>
+                <div class="w-full md:w-80">
+                    <input type="text" id="sign-search-input" oninput="filterSigns()" placeholder="Որոնել նշան..."
+                        class="w-full bg-cardBg border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neon-400 focus:ring-2 focus:ring-neon-500/20 transition">
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex flex-wrap gap-2" id="signs-categories-bar">
+                    <button onclick="filterSignCategory('all')" data-category="all"
+                        class="sign-cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-neon-500 text-black transition">Բոլորը</button>
+                    <button onclick="filterSignCategory('warning')" data-category="warning"
+                        class="sign-cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-300 border border-gray-800 hover:border-neon-500/40 transition">Նախազգուշացնող</button>
+                    <button onclick="filterSignCategory('priority')" data-category="priority"
+                        class="sign-cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-300 border border-gray-800 hover:border-neon-500/40 transition">Առավելության</button>
+                    <button onclick="filterSignCategory('prohibitory')" data-category="prohibitory"
+                        class="sign-cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-300 border border-gray-800 hover:border-neon-500/40 transition">Արգելող</button>
+                    <button onclick="filterSignCategory('mandatory')" data-category="mandatory"
+                        class="sign-cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-300 border border-gray-800 hover:border-neon-500/40 transition">Թելադրող</button>
+                    <button onclick="filterSignCategory('special')" data-category="special"
+                        class="sign-cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-300 border border-gray-800 hover:border-neon-500/40 transition">Հատուկ
+                        թելադրանքի</button>
+                    <button onclick="filterSignCategory('information')" data-category="information"
+                        class="sign-cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-300 border border-gray-800 hover:border-neon-500/40 transition">Տեղեկատվության</button>
+                    <button onclick="filterSignCategory('service')" data-category="service"
+                        class="sign-cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-300 border border-gray-800 hover:border-neon-500/40 transition">Սպասարկման</button>
+                    <button onclick="filterSignCategory('supplementary')" data-category="supplementary"
+                        class="sign-cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-300 border border-gray-800 hover:border-neon-500/40 transition">Լրացուցիչ
+                        ցուցանակներ</button>
+                    <button onclick="filterSignCategory('recognition')" data-category="recognition"
+                        class="sign-cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-cardBg text-gray-300 border border-gray-800 hover:border-neon-500/40 transition">Ճանաչման
+                        նշաններ</button>
+                </div>
+                <span id="signs-count" class="shrink-0 text-xs font-semibold text-gray-400"></span>
+            </div>
+
+            <div id="signs-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
+            <p class="text-xs text-gray-500 text-center">
+                Նշանների պատկերները՝
+                <a href="https://www.drift.am/trafficsigns" target="_blank" rel="noopener noreferrer"
+                    class="text-neon-400 hover:underline">Drift.am ճանապարհային նշանների ցանկից</a>։
+            </p>
+        </section>
+
+        <!-- 5. COLOR PERCEPTION TEST SECTION (With Multiple Choice) -->
+        <section id="section-colorTest"
+            class="tab-section hidden py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-8">
+            <div
+                class="bg-cardBg border border-neon-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 text-center relative overflow-hidden">
+                <div
+                    class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-neon-500/10 border border-neon-500/30 text-neon-400 text-xs font-semibold uppercase tracking-wider">
+                    <span>Բժշկական հանձնաժողովի նախապատրաստություն</span>
+                </div>
+                <h2 class="text-3xl font-extrabold tracking-tight text-white">Գունընկալման Թեստ </h2>
+                <p class="text-gray-400 text-sm max-w-xl mx-auto">
+                    Ընտրեք ճիշտ պատասխանը ստորև բերված տարբերակներից շրջանակում պատկերված թվի վերաբերյալ:
+                </p>
+
+                <!-- Color Plate Container -->
+                <div class="space-y-6 pt-4">
+                    <div id="color-plate-frame"
+                        class="relative mx-auto flex aspect-square w-64 items-center justify-center overflow-hidden rounded-2xl border border-gray-700 bg-black/30 shadow-xl shadow-neon-950/20 sm:w-80">
+                        <img id="color-question-image" class="hidden h-full w-full object-contain"
+                            alt="Գունընկալման թեստի պատկեր">
+                        <div id="color-image-placeholder" class="space-y-2 px-5 text-center">
+                            <p class="text-sm font-semibold text-gray-300">Նկարը չի գտնվել</p>
+                            <p id="color-image-path" class="break-all font-mono text-[10px] text-gray-500"></p>
+                        </div>
+                    </div>
+
+                    <!-- Multiple Choice Options for Color Test -->
+                    <div class="max-w-md mx-auto space-y-4">
+                        <div id="color-question-text" class="text-sm font-semibold text-gray-300">Ո՞րն է պատկերված թիվը
+                            շրջանակում:</div>
+                        <div id="color-question-progress" class="text-xs font-mono text-neon-400"></div>
+                        <div id="color-options-grid" class="grid grid-cols-2 gap-3">
+                            <!-- Populated via JS -->
+                        </div>
+                        <p id="color-feedback" class="text-sm font-semibold min-h-[24px] pt-2"></p>
+                    </div>
+
+                    <div id="color-test-results"
+                        class="hidden mx-auto max-w-md rounded-2xl border border-neon-500/30 bg-black/30 p-5 text-left shadow-lg">
+                        <div class="mb-4 flex items-center justify-between gap-4">
+                            <h3 class="font-bold text-white">Թեստի արդյունքը</h3>
+                            <span id="color-result-percentage" class="text-xl font-extrabold text-neon-400"></span>
+                        </div>
+                        <div class="mb-4 h-3 overflow-hidden rounded-full bg-gray-800" role="progressbar"
+                            aria-label="Գունընկալման թեստի արդյունք" aria-valuemin="0" aria-valuemax="100">
+                            <div id="color-result-progress"
+                                class="h-full rounded-full bg-gradient-to-r from-neon-500 to-emerald-400 transition-all duration-700"
+                                style="width: 0%"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div class="rounded-xl border border-neon-500/20 bg-neon-500/5 p-3">
+                                <div class="text-xs text-gray-400">Ճիշտ պատասխաններ</div>
+                                <div id="color-result-correct" class="mt-1 text-xl font-extrabold text-neon-400">0</div>
+                            </div>
+                            <div class="rounded-xl border border-red-500/20 bg-red-500/5 p-3">
+                                <div class="text-xs text-gray-400">Սխալ պատասխաններ</div>
+                                <div id="color-result-wrong" class="mt-1 text-xl font-extrabold text-red-400">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-center">
+                        <button onclick="nextColorPlate()" id="next-color-btn"
+                            class="hidden px-6 py-3 bg-neon-400 text-black font-extrabold rounded-xl hover:bg-neon-500 transition shadow-lg shadow-neon-500/20">
+                            Հաջորդ պատկերը →
+                        </button>
+                        <button onclick="restartColorTest()" id="restart-color-test-btn"
+                            class="hidden px-6 py-3 bg-neon-400 text-black font-extrabold rounded-xl hover:bg-neon-500 transition shadow-lg shadow-neon-500/20">
+                            Կրկին անցնել թեստը
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. ABOUT SECTION -->
+        <section id="section-about" class="tab-section hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                <div class="space-y-6">
+                    <div
+                        class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-neon-500/10 border border-neon-500/30 text-neon-400 text-xs font-semibold uppercase tracking-wider">
+                        <span>Մեր մասին</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                        «Վարորդի տուն»՝ ձեր վստահելի ուղեկիցը ճանապարհին
+                    </h2>
+                    <p class="text-gray-400 leading-relaxed">
+                        Մենք հիմնադրել ենք «Վարորդի տուն» ավտոդպրոցը նպատակ ունենալով Հայաստանում ձևավորել անվտանգ,
+                        գրագետ և կարգապահ վարորդների նոր սերունդ: Մեր փորձառու հրահանգիչները ապահովում են առավելագույն
+                        արդյունավետություն:
+                    </p>
+                </div>
+                <div
+                    class="relative overflow-hidden rounded-3xl border border-neon-500/30 bg-gradient-to-br from-cardBg via-cardBg to-emerald-950/30 p-6 sm:p-8 shadow-2xl">
+                    <div class="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-neon-500/10 blur-3xl"></div>
+                    <div class="relative space-y-6">
+                        <div class="flex items-center gap-4 border-b border-gray-800 pb-5">
+                            <div
+                                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-neon-500/30 bg-neon-500/10 text-2xl">
+                                📍</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Այցելեք մեզ</h3>
+                                <p class="mt-1 text-sm text-gray-400">Ք. Արարատ, Շահումյան փողոց 33/6</p>
+                            </div>
+                        </div>
+                        <a href="tel:+37494984198"
+                            class="flex items-center gap-4 rounded-2xl border border-gray-800 bg-black/20 p-4 transition hover:border-neon-500/40">
+                            <span
+                                class="flex h-10 w-10 items-center justify-center rounded-xl bg-neon-500/10 text-lg text-neon-400">📞</span>
+                            <span>
+                                <span class="block text-xs text-gray-500">Հեռախոսահամար</span>
+                                <span class="mt-0.5 block text-sm font-bold text-gray-200">094 984 198</span>
+                            </span>
+                        </a>
+                        <a href="https://www.google.com/maps/search/?api=1&query=%D5%94.%20%D4%B1%D6%80%D5%A1%D6%80%D5%A1%D5%BF%2C%20%D5%87%D5%A1%D5%B0%D5%B8%D6%82%D5%B4%D5%B5%D5%A1%D5%B6%2033%2F6"
+                            target="_blank" rel="noopener noreferrer"
+                            class="inline-flex items-center gap-2 text-xs font-bold text-neon-400 transition hover:text-neon-300">
+                            Բացել քարտեզը ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="relative overflow-hidden rounded-3xl border border-neon-500/30 bg-cardBg p-2 shadow-2xl shadow-neon-950/30 sm:p-3">
+                <div class="flex flex-col gap-3 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-neon-400">Գտեք մեզ քարտեզի վրա
+                        </div>
+                        <h3 class="mt-1 text-lg font-extrabold text-white">Ք. Արարատ, Շահումյան փողոց 33/6</h3>
+                    </div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=%D5%94.%20%D4%B1%D6%80%D5%A1%D6%80%D5%A1%D5%BF%2C%20%D5%87%D5%A1%D5%B0%D5%B8%D6%82%D5%B4%D5%B5%D5%A1%D5%B6%2033%2F6"
+                        target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-neon-500/30 bg-neon-500/10 px-4 py-2.5 text-xs font-bold text-neon-400 transition hover:bg-neon-500/20 sm:self-auto">
+                        Բացել Google Maps-ում <span aria-hidden="true">↗</span>
+                    </a>
+                </div>
+                <div class="overflow-hidden rounded-2xl border border-gray-800 bg-black/30">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d1683.3361209199336!2d44.69661604475224!3d39.85116051755563!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1z0JDRgNCw0YDQsNGC0YHQutC40Lkg0LrRgNCw0LksINCz0L7RgNC-0LQg0JDRgNCw0YDQsNGCLCDRg9C70LjRhtCwINCo0LDRg9C80Y_QvSwgMzMvNg!5e0!3m2!1sru!2sam!4v1793199670094!5m2!1sru!2sam"
+                        title="Քարտեզ՝ Ք. Արարատ, Շահումյան 33/6"
+                        class="h-[360px] w-full border-0 sm:h-[440px] lg:h-[520px]" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                </div>
+
+            </div>
+
+            <div class="space-y-6">
+                <div class="space-y-2 text-center">
+                    <div class="text-xs font-bold uppercase tracking-[0.2em] text-neon-400">Մեր մասնագետները</div>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white">Դասընթացավարների թիմը</h3>
+                    <p class="mx-auto max-w-2xl text-sm text-gray-400">Մասնագիտական աջակցություն տեսական և գործնական
+                        դասընթացների ընթացքում։</p>
+                </div>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <article
+                        class="group overflow-hidden rounded-3xl border border-gray-800 bg-cardBg shadow-xl transition hover:-translate-y-1 hover:border-neon-500/40">
+                        <div
+                            class="relative flex h-64 items-center justify-center overflow-hidden bg-gradient-to-br from-neon-500/20 via-emerald-950 to-gray-950">
+                            <div
+                                class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(74,222,128,0.2),transparent_60%)]">
+                            </div>
+                            <div
+                                class="relative flex h-36 w-36 items-center justify-center rounded-full border-4 border-neon-400/40 bg-gray-900/80 text-4xl font-extrabold text-neon-400 shadow-2xl shadow-neon-500/10">
+                                ՄՏ
+                            </div>
+                            <span
+                                class="absolute bottom-4 rounded-full border border-neon-500/30 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-neon-300">Տեսական
+                                դասընթաց</span>
+                        </div>
+                        <div class="space-y-2 p-6 text-center">
+                            <h4 class="text-xl font-extrabold text-white">Մարինա Տոնիկյան</h4>
+                            <p class="text-sm text-gray-400">Տեսական դասընթացավար</p>
+                        </div>
+                    </article>
+                    <article
+                        class="group overflow-hidden rounded-3xl border border-gray-800 bg-cardBg shadow-xl transition hover:-translate-y-1 hover:border-neon-500/40">
+                        <div
+                            class="relative flex h-64 items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-500/20 via-emerald-950 to-gray-950">
+                            <div
+                                class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(74,222,128,0.2),transparent_60%)]">
+                            </div>
+                            <div
+                                class="relative flex h-36 w-36 items-center justify-center rounded-full border-4 border-neon-400/40 bg-gray-900/80 text-4xl font-extrabold text-neon-400 shadow-2xl shadow-neon-500/10">
+                                ԱԽ
+                            </div>
+                            <span
+                                class="absolute bottom-4 rounded-full border border-neon-500/30 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-neon-300">Գործնական
+                                դասընթաց</span>
+                        </div>
+                        <div class="space-y-2 p-6 text-center">
+                            <h4 class="text-xl font-extrabold text-white">Անի Խաչատրյան</h4>
+                            <p class="text-sm text-gray-400">Գործնական դասընթացավար</p>
+                            <div
+                                class="inline-flex items-center gap-2 rounded-full border border-gray-700 bg-black/30 px-3 py-1.5 text-xs text-gray-300">
+                                <span class="text-neon-400">Մեքենա՝</span> Ford Focus
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-neon-500/20 py-8 mt-12">
+        <div
+            class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-neon-400 flex items-center justify-center font-bold text-black">ՎՏ
+                </div>
+                <span class="text-sm font-bold text-gray-300">«Վարորդի տուն» Ավտոդպրոց © 2026</span>
+            </div>
+            <div class="text-xs text-gray-500 text-center md:text-right">
+                Համապատասխանում է ՀՀ ՃԵԿ և readpolice.am պաշտոնական չափանիշներին:
+            </div>
+        </div>
+    </footer>
+
+
+
+    <!-- Notification Toast Box -->
+    <div id="toast-box"
+        class="fixed bottom-6 right-6 z-50 hidden max-w-sm bg-cardBg border border-neon-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3">
+        <div id="toast-icon" class="text-neon-400 text-xl">✓</div>
+        <div>
+            <div id="toast-title" class="font-bold text-sm">Հաջողություն</div>
+            <div id="toast-message" class="text-xs text-gray-400">Գործողությունը հաջողությամբ ավարտվեց:</div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Navigation Tabs ---
+        function switchTab(tabId) {
+            const targetTabId = tabId === 'pricing' ? 'home' : tabId;
+            const currentSection = document.querySelector('.tab-section:not(.hidden)');
+            if (currentSection && currentSection.id === 'section-tests' && targetTabId !== 'tests' &&
+                typeof exitActiveTestForNavigation === 'function') {
+                exitActiveTestForNavigation();
+            }
+
+            document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-' + targetTabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-neon-400', 'bg-neon-500/10', 'border', 'border-neon-500/30');
+                btn.classList.add('text-gray-300');
+            });
+            const activeBtn = document.getElementById('nav-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-gray-300');
+                activeBtn.classList.add('text-neon-400', 'bg-neon-500/10', 'border', 'border-neon-500/30');
+            }
+            if (typeof persistNavigationState === 'function') {
+                persistNavigationState();
+            }
+            if (tabId === 'pricing') {
+                window.requestAnimationFrame(() => {
+                    document.getElementById('section-pricing').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function showToast(title, message, isSuccess = true) {
+            const toast = document.getElementById('toast-box');
+            if (!toast) return;
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-message').innerText = message;
+            document.getElementById('toast-icon').innerText = isSuccess ? '✓' : '⚠️';
+            toast.classList.remove('hidden');
+            setTimeout(() => { toast.classList.add('hidden'); }, 4000);
+        }
+
+
+
+        // --- Road Signs Catalog ---
+        const signCategories = [
+            { id: 'warning', title: 'Նախազգուշացնող նշաններ', codes: '1.1 1.2 1.3.1 1.3.2 1.4.1 1.4.2 1.4.3 1.4.4 1.4.5 1.4.6 1.5 1.6 1.7 1.8 1.9 1.10 1.11.1 1.11.2 1.12.1 1.12.2 1.13 1.14 1.15 1.16 1.17 1.18 1.19 1.20.1 1.20.2 1.20.3 1.21 1.22 1.23 1.24 1.25 1.26 1.27 1.28 1.29 1.30 1.31 1.32 1.33 1.34.1 1.34.2 1.34.3 1.34.11 1.34.12 1.34.21 1.34.23 1.34.31' },
+            { id: 'priority', title: 'Առավելության նշաններ', codes: '2.1 2.2 2.3.1 2.3.2 2.3.3 2.3.4 2.3.5 2.3.6 2.3.7 2.4 2.5 2.6 2.7' },
+            { id: 'prohibitory', title: 'Արգելող նշաններ', codes: '3.1 3.2 3.3 3.4 3.5 3.6 3.7 3.8 3.9 3.10 3.11 3.12 3.13 3.14 3.15 3.16 3.17.1 3.17.2 3.17.3 3.18.1 3.18.2 3.19 3.20 3.21 3.22 3.23 3.24 3.25 3.26 3.27 3.28 3.29 3.30 3.31 3.32 3.33' },
+            { id: 'mandatory', title: 'Թելադրող նշաններ', codes: '4.1.1 4.1.2 4.1.3 4.1.4 4.1.5 4.1.6 4.2.1 4.2.2 4.2.3 4.3 4.4 4.5 4.6 4.7 4.8.1 4.8.2 4.8.3' },
+            { id: 'special', title: 'Հատուկ թելադրանքի նշաններ', codes: '5.1 5.2 5.3 5.4 5.5 5.6 5.7.1 5.7.2 5.8 5.9 5.10 5.11 5.12 5.13.1 5.13.2 5.14 5.15.1 5.15.2 5.15.2.1 5.15.2.2 5.15.2.3 5.15.3 5.15.3.1 5.15.4 5.15.4.1 5.15.5 5.15.6 5.15.7 5.15.7.1 5.15.7.2 5.15.8 5.16 5.17 5.18 5.19.1 5.19.2 5.20 5.21 5.22 5.23.1 5.23.2 5.24.1 5.24.2 5.25 5.26 5.27 5.28 5.29 5.30 5.31 5.32 5.33 5.34' },
+            { id: 'information', title: 'Տեղեկատվության նշաններ', codes: '6.1 6.2 6.3.1 6.3.2 6.4 6.5 6.6 6.7 6.8.1 6.8.2 6.8.3 6.9 6.9.1 6.9.1.15 6.9.15 6.9.2 6.9.2.2 6.9.2.3 6.9.3 6.10.1 6.10.1.2 6.10.1.2.3 6.10.1.2.4 6.10.1.2.5 6.10.2 6.10.2.1 6.11.1 6.11.2 6.11.3 6.12 6.12.1 6.13 6.14.1 6.14.2 6.14.2.1 6.15.1 6.15.2 6.15.3 6.16 6.17 6.18.1 6.18.2 6.18.3 6.19.1 6.19.2 6.20.1 6.20.2 6.21.1' },
+            { id: 'service', title: 'Սպասարկման նշաններ', codes: '7.1 7.2 7.3 7.4 7.5 7.6 7.7 7.8 7.9 7.10 7.11 7.12 7.13 7.14 7.15 7.16 7.17 7.18 7.19 7.20' },
+            { id: 'supplementary', title: 'Լրացուցիչ տեղեկատվության ցուցանակներ', codes: '8.1.1 8.1.2 8.1.3 8.1.4 8.2.1 8.2.2 8.2.3 8.2.4 8.2.5 8.2.6 8.3.1 8.3.2 8.3.3 8.4.1 8.4.2 8.4.3 8.4.4 8.4.5 8.4.6 8.4.7 8.4.8 8.5.1 8.5.2 8.5.3 8.5.4 8.5.5 8.5.6 8.5.7 8.6.1 8.6.2 8.6.3 8.6.4 8.6.5 8.6.6 8.6.7 8.6.8 8.6.9 8.7 8.8 8.9 8.10 8.11 8.12 8.13 8.14 8.15 8.16 8.17 8.18 8.19 8.20.1 8.20.2 8.21.1 8.21.2 8.21.3 8.22.1 8.22.2 8.22.3' },
+            { id: 'recognition', title: 'Տրանսպորտային միջոցների ճանաչման նշաններ', codes: 'tsr-9.1 tsr-9.2 tsr-9.3 tsr-9.4 tsr-9.5 tsr-9.6 tsr-9.7 tsr-9.8 tsr-9.10 tsr-9.11 tsr-9.12 tsr-9.13' }
+        ];
+
+        const signNameByCode = {
+            '1.1': 'Երկաթուղային գծանց՝ ուղեփակոցով', '1.2': 'Երկաթուղային գծանց՝ առանց ուղեփակոցի',
+            '1.3.1': 'Միագիծ երկաթուղի', '1.3.2': 'Բազմագիծ երկաթուղի',
+            '1.4.1': 'Մոտեցում երկաթուղային գծանցին', '1.4.2': 'Մոտեցում երկաթուղային գծանցին',
+            '1.4.3': 'Մոտեցում երկաթուղային գծանցին', '1.4.4': 'Մոտեցում երկաթուղային գծանցին',
+            '1.4.5': 'Մոտեցում երկաթուղային գծանցին', '1.4.6': 'Մոտեցում երկաթուղային գծանցին',
+            '1.5': 'Հատում տրամվայի գծի հետ', '1.6': 'Հավասարազոր ճանապարհների հատում',
+            '1.7': 'Հատում շրջանաձև երթևեկության հետ', '1.8': 'Լուսացուցային կարգավորում',
+            '1.9': 'Բացվող կամուրջ', '1.10': 'Ելք դեպի առափ', '1.11.1': 'Վտանգավոր շրջադարձ դեպի աջ',
+            '1.11.2': 'Վտանգավոր շրջադարձ դեպի ձախ', '1.12.1': 'Վտանգավոր շրջադարձեր',
+            '1.12.2': 'Վտանգավոր շրջադարձեր', '1.13': 'Կտրուկ վայրէջք', '1.14': 'Կտրուկ վերելք',
+            '1.15': 'Սայթաքուն ճանապարհ', '1.16': 'Անհարթ ճանապարհ', '1.17': 'Արհեստական անհարթություն',
+            '1.18': 'Խճի արտանետում', '1.19': 'Վտանգավոր կողնակ', '1.20.1': 'Ճանապարհի նեղացում',
+            '1.20.2': 'Ճանապարհի նեղացում աջից', '1.20.3': 'Ճանապարհի նեղացում ձախից',
+            '1.21': 'Երկկողմ երթևեկություն', '1.22': 'Հետիոտնային անցում', '1.23': 'Երեխաներ',
+            '1.24': 'Հատում հեծանվային արահետի հետ', '1.25': 'Ճանապարհային աշխատանքներ',
+            '1.26': 'Անասունների քշում', '1.27': 'Վայրի կենդանիներ', '1.28': 'Քարերի անկում',
+            '1.29': 'Կողային քամի', '1.30': 'Ցածրաթռիչք ինքնաթիռներ', '1.31': 'Թունել',
+            '1.32': 'Խցանում', '1.33': 'Այլ վտանգներ', '2.1': 'Գլխավոր ճանապարհ',
+            '2.2': 'Գլխավոր ճանապարհի վերջ', '2.4': 'Զիջեք ճանապարհը',
+            '2.5': 'Երթևեկությունն առանց կանգառի արգելվում է',
+            '2.6': 'Հանդիպակաց երթևեկության առավելություն',
+            '2.7': 'Առավելություն հանդիպակաց երթևեկության նկատմամբ',
+            '3.6': 'Տրակտորների երթևեկությունն արգելվում է',
+            '3.7': 'Կցորդով երթևեկությունն արգելվում է',
+            '3.8': 'Լծասայլերի երթևեկությունն արգելվում է',
+            '3.11': 'Զանգվածի սահմանափակում', '3.12': 'Սռնու բեռնվածության սահմանափակում',
+            '3.13': 'Բարձրության սահմանափակում', '3.14': 'Լայնության սահմանափակում',
+            '3.15': 'Երկարության սահմանափակում', '3.16': 'Նվազագույն միջտարածության սահմանափակում',
+            '3.17.1': 'Մաքսային կետ', '3.17.2': 'Վտանգ', '3.17.3': 'Հսկիչ կետ',
+            '3.21': 'Վազանցի արգելման գոտու վերջ',
+            '3.22': 'Բեռնատար ավտոմոբիլներով վազանցն արգելվում է',
+            '3.23': 'Բեռնատար ավտոմոբիլներով վազանցի արգելման գոտու վերջ',
+            '3.25': 'Առավելագույն արագության սահմանափակման գոտու վերջ',
+            '3.26': 'Ձայնային ազդանշան տալն արգելվում է',
+            '3.29': 'Կայանելն արգելվում է ամսվա կենտ օրերին',
+            '3.30': 'Կայանելն արգելվում է ամսվա զույգ օրերին',
+            '3.31': 'Բոլոր սահմանափակումների գոտու վերջ',
+            '3.32': 'Վտանգավոր բեռներով տրանսպորտային միջոցների երթևեկությունն արգելվում է',
+            '3.33': 'Պայթուցիկ և դյուրավառ բեռներով տրանսպորտային միջոցների երթևեկությունն արգելվում է',
+            '4.1.1': 'Երթևեկությունն ուղիղ', '4.1.2': 'Երթևեկությունը դեպի աջ',
+            '4.1.3': 'Երթևեկությունը դեպի ձախ', '4.1.4': 'Երթևեկությունն ուղիղ կամ դեպի աջ',
+            '4.1.5': 'Երթևեկությունն ուղիղ կամ դեպի ձախ', '4.1.6': 'Երթևեկությունը դեպի աջ կամ ձախ',
+            '4.2.1': 'Արգելքի շրջանցումն աջից', '4.2.2': 'Արգելքի շրջանցումը ձախից',
+            '4.2.3': 'Արգելքի շրջանցումն աջից կամ ձախից',
+            '3.1': 'Մուտքն արգելվում է', '3.2': 'Երթևեկությունն արգելվում է',
+            '3.3': 'Մեխանիկական տրանսպորտային միջոցների երթևեկությունն արգելվում է',
+            '3.4': 'Բեռնատար ավտոմոբիլների երթևեկությունն արգելվում է',
+            '3.5': 'Մոտոցիկլների երթևեկությունն արգելվում է',
+            '3.9': 'Հեծանիվներով երթևեկությունն արգելվում է',
+            '3.10': 'Հետիոտների տեղաշարժն արգելվում է',
+            '3.18.1': 'Աջ շրջադարձն արգելվում է', '3.18.2': 'Ձախ շրջադարձն արգելվում է',
+            '3.19': 'Հետադարձն արգելվում է', '3.20': 'Վազանցն արգելվում է',
+            '3.24': 'Առավելագույն արագության սահմանափակում', '3.27': 'Կանգառն արգելվում է',
+            '3.28': 'Կայանելն արգելվում է', '4.3': 'Շրջանաձև երթևեկություն',
+            '5.1': 'Ավտոմայրուղի', '5.2': 'Ավտոմայրուղու վերջ',
+            '5.3': 'Ճանապարհ ավտոմոբիլների համար', '5.4': 'Ավտոմոբիլների համար ճանապարհի վերջ',
+            '5.5': 'Միակողմ երթևեկությամբ ճանապարհ', '5.6': 'Միակողմ երթևեկությամբ ճանապարհի վերջ',
+            '5.8': 'Դարձափոխային երթևեկություն', '5.9': 'Դարձափոխային երթևեկության վերջ',
+            '5.11': 'Ընդհանուր օգտագործման տրանսպորտային միջոցների համար գոտիով ճանապարհ',
+            '5.14': 'Ընդհանուր օգտագործման տրանսպորտային միջոցների համար գոտի',
+            '5.15.1': 'Երթևեկության ուղղությունները գոտիներով',
+            '5.19.1': 'Հետիոտնային անցում', '5.19.2': 'Հետիոտնային անցում',
+            '5.16': 'Ավտոբուսի կամ տրոլեյբուսի կանգառ', '5.17': 'Տրամվայի կանգառ',
+            '5.18': 'Թեթև մարդատար տաքսիների կայանման տեղ',
+            '5.20': 'Արհեստական անհարթություն', '5.21': 'Բնակելի գոտի',
+            '5.22': 'Բնակելի գոտու վերջ', '5.23.1': 'Բնակավայրի սկիզբ',
+            '5.23.2': 'Բնակավայրի սկիզբ', '5.24.1': 'Բնակավայրի վերջ',
+            '5.24.2': 'Բնակավայրի վերջ', '5.25': 'Բնակավայրի սկիզբ',
+            '5.26': 'Բնակավայրի վերջ', '5.27': 'Կայանման սահմանափակումով գոտի',
+            '5.28': 'Կայանման սահմանափակումով գոտու վերջ',
+            '5.29': 'Կարգավորվող կայանման գոտի', '5.30': 'Կարգավորվող կայանման գոտու վերջ',
+            '5.31': 'Առավելագույն արագության սահմանափակումով գոտի',
+            '5.32': 'Առավելագույն արագության սահմանափակումով գոտու վերջ',
+            '5.33': 'Հետիոտնային գոտի', '5.34': 'Հետիոտնային գոտու վերջ',
+            '6.1': 'Առավելագույն արագության ընդհանուր սահմանափակում',
+            '6.2': 'Առաջարկվող արագություն', '6.3.1': 'Հետադարձի տեղ',
+            '6.3.2': 'Հետադարձի գոտի', '6.4': 'Կայանման տեղ',
+            '6.5': 'Վթարային կանգառի գոտի', '6.8.1': 'Փակուղի',
+            '6.9.1': 'Ուղղությունների նախնական ցուցիչ',
+            '6.9.2': 'Ուղղության նախնական ցուցիչ',
+            '6.9.3': 'Երթևեկության սխեմա', '6.10.1': 'Ուղղությունների ցուցիչ',
+            '6.10.2': 'Ուղղության ցուցիչ', '6.11.1': 'Օբյեկտի անվանում',
+            '6.12': 'Հեռավորությունների ցուցիչ', '6.13': 'Կիլոմետրային նշան',
+            '6.14.1': 'Երթուղու համար', '6.15.1': 'Երթևեկության ուղղություն բեռնատարների համար',
+            '6.16': 'Կանգ-գիծ', '6.17': 'Շրջանցման սխեմա',
+            '6.18.1': 'Շրջանցման ուղղություն',
+            '6.19.1': 'Այլ երթևեկելի մաս վերադասավորվելու նախնական ցուցիչ',
+            '6.20.1': 'Վթարային ելք', '6.21.1': 'Դեպի վթարային ելք տեղաշարժման ուղղություն',
+            '6.4': 'Կայանման տեղ', '6.6': 'Ստորգետնյա հետիոտնային անցում',
+            '6.7': 'Վերգետնյա հետիոտնային անցում', '7.1': 'Առաջին օգնության կետ',
+            '7.2': 'Հիվանդանոց', '7.3': 'Լցակայան', '7.4': 'Տեխնիկական սպասարկում',
+            '7.5': 'Ավտոմեքենայի լվացում', '7.6': 'Հեռախոս', '7.7': 'Սննդի կետ',
+            '7.8': 'Խմելու ջուր', '7.9': 'Հյուրանոց կամ մոթել',
+            '7.10': 'Հանգրվան', '7.11': 'Հանգստի վայր',
+            '7.12': 'Ճանապարհային ոստիկանության պահակետ', '7.13': 'Ոստիկանություն',
+            '7.14': 'Միջազգային ավտոմոբիլային փոխադրումների հսկման կետ',
+            '7.15': 'Ճանապարհային երթևեկության մասին տեղեկություն հաղորդող ռադիոկայան',
+            '7.16': 'Վթարային ծառայությունների հետ ռադիոկապի գոտի',
+            '7.17': 'Լողավազան կամ լողափ', '7.18': 'Զուգարան',
+            '7.19': 'Արտակարգ կապի հեռախոս', '7.20': 'Կրակմարիչ',
+            'tsr-9.1': 'Ավտոգնացք', 'tsr-9.2': 'Արագության սահմանափակում',
+            'tsr-9.3': 'Դանդաղընթաց տրանսպորտային միջոց', 'tsr-9.4': 'Երեխաների փոխադրում',
+            'tsr-9.5': 'Բութակներ', 'tsr-9.6': 'Երկարաչափ տրանսպորտային միջոց',
+            'tsr-9.7': 'Խուլ վարորդ', 'tsr-9.8': 'Մեծ եզրաչափերով բեռ',
+            'tsr-9.10': 'Վտանգավոր բեռ', 'tsr-9.11': 'Ուսումնական տրանսպորտային միջոց',
+            'tsr-9.12': 'Բժիշկ', 'tsr-9.13': 'Հաշմանդամ'
+        };
+
+        const signImageFileByCode = {
+            '5.23.1': '5.23.1.1', '5.24.1': '5.24.1.1',
+            '5.25': '5.25.2', '5.26': '5.25.1',
+            '4.8.1': '4.8.2', '4.8.2': '4.8.3', '4.8.3': '4.8.1',
+            '6.8.2': '6.8.3', '6.8.3': '6.8.3.1',
+            '6.9.1': '6.9.1.3', '6.9.2': '6.9.2.1',
+            '6.10.1': '6.10.1.1', '6.10.1.2': '6.10.1.2',
+            '6.10.2': '6.10.2.1', '6.10.2.1': '6.10.2',
+            '6.11.1': '6.11.1', '6.11.2': '6.11.2', '6.11.3': '6.11.3',
+            '6.12.1': '6.12.1', '6.12': '6.12',
+            '6.14.2': '6.14.2', '6.14.2.1': '6.14.2.1',
+            '6.15.1': '6.15.4', '6.18.1': '6.18',
+            '6.18.2': '6.18.3', '6.18.3': '6.18.1',
+            '8.1.3': '8.1.4', '8.1.4': '8.1.3'
+        };
+
+        const roadSignsData = signCategories.flatMap(category => category.codes.split(/\s+/).map(code => ({
+            code,
+            cat: category.id,
+            categoryTitle: category.title,
+            title: signNameByCode[code] || `Ճանապարհային նշան ${code}`,
+            image: `https://www.drift.am/img/aaaaa/${signImageFileByCode[code] || code}.${category.id === 'recognition' ? 'jpg' : 'png'}`
+        })));
+
+        window.showRoadSignByCode = function (code) {
+            const sign = roadSignsData.find(item => item.code === code);
+            if (!sign) {
+                showToast('Նշանը չի գտնվել', `Կոդ ${code}-ով նշանը չկա ճանապարհային նշանների բազայում։`, false);
+                return;
+            }
+
+            let dialog = document.getElementById('road-sign-preview-dialog');
+            if (!dialog) {
+                dialog = document.createElement('dialog');
+                dialog.id = 'road-sign-preview-dialog';
+                dialog.className = 'w-[min(92vw,28rem)] rounded-2xl border border-neon-500/30 bg-cardBg p-0 text-white shadow-2xl backdrop:bg-black/70';
+
+                const content = document.createElement('div');
+                content.className = 'space-y-4 p-5';
+                const heading = document.createElement('div');
+                heading.className = 'flex items-start justify-between gap-4';
+                const title = document.createElement('h2');
+                title.id = 'road-sign-preview-title';
+                title.className = 'text-lg font-bold text-white';
+                const closeButton = document.createElement('button');
+                closeButton.type = 'button';
+                closeButton.className = 'rounded-lg px-3 py-1 text-gray-300 hover:bg-white/10 hover:text-white';
+                closeButton.textContent = 'Փակել';
+                closeButton.addEventListener('click', () => dialog.close());
+                heading.append(title, closeButton);
+
+                const imageBox = document.createElement('div');
+                imageBox.className = 'flex min-h-48 items-center justify-center rounded-xl bg-white p-4';
+                const image = document.createElement('img');
+                image.id = 'road-sign-preview-image';
+                image.className = 'max-h-64 max-w-full object-contain';
+                const fallback = document.createElement('span');
+                fallback.id = 'road-sign-preview-fallback';
+                fallback.className = 'hidden font-mono text-3xl font-black text-gray-500';
+                image.addEventListener('error', () => {
+                    image.classList.add('hidden');
+                    fallback.classList.remove('hidden');
+                });
+                imageBox.append(image, fallback);
+                content.append(heading, imageBox);
+                dialog.appendChild(content);
+                dialog.addEventListener('click', event => {
+                    if (event.target === dialog) dialog.close();
+                });
+                document.body.appendChild(dialog);
+            }
+
+            const title = document.getElementById('road-sign-preview-title');
+            const image = document.getElementById('road-sign-preview-image');
+            const fallback = document.getElementById('road-sign-preview-fallback');
+            title.textContent = `${sign.code}. ${sign.title}`;
+            image.classList.remove('hidden');
+            fallback.classList.add('hidden');
+            fallback.textContent = sign.code;
+            image.alt = `${sign.title} (${sign.code})`;
+            image.src = sign.image;
+            dialog.showModal();
+        };
+
+        let activeSignCategory = 'all';
+
+        function initRoadSigns(filter = activeSignCategory, searchQuery = '') {
+            const grid = document.getElementById('signs-grid');
+            const query = searchQuery.trim().toLocaleLowerCase('hy-AM');
+            const filtered = roadSignsData.filter(sign => {
+                const matchesCategory = filter === 'all' || sign.cat === filter;
+                const matchesQuery = !query || `${sign.code} ${sign.title} ${sign.categoryTitle}`.toLocaleLowerCase('hy-AM').includes(query);
+                return matchesCategory && matchesQuery;
+            });
+
+            grid.innerHTML = '';
+            document.getElementById('signs-count').textContent = `${filtered.length} նշան`;
+            if (filtered.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'col-span-full rounded-2xl border border-gray-800 bg-cardBg p-10 text-center text-sm text-gray-400';
+                empty.textContent = 'Այս որոնմամբ նշան չի գտնվել։';
+                grid.appendChild(empty);
+                return;
+            }
+
+            filtered.forEach(sign => {
+                const card = document.createElement('article');
+                card.className = 'group rounded-2xl border border-gray-800 bg-cardBg p-3 sm:p-4 shadow-lg transition duration-200 hover:-translate-y-1 hover:border-neon-500/50 hover:shadow-neon-500/5';
+
+                const heading = document.createElement('div');
+                heading.className = 'flex items-center justify-between gap-2';
+                const code = document.createElement('span');
+                code.className = 'rounded-lg bg-neon-500/10 px-2.5 py-1 font-mono text-xs font-extrabold text-neon-400';
+                code.textContent = sign.code;
+                const category = document.createElement('span');
+                category.className = 'truncate text-[10px] text-gray-500';
+                category.textContent = sign.categoryTitle;
+                heading.append(code, category);
+
+                const imageBox = document.createElement('div');
+                imageBox.className = 'relative my-3 flex h-28 items-center justify-center overflow-hidden rounded-xl border border-white/5 bg-gradient-to-br from-white to-gray-100 sm:h-32';
+                const fallback = document.createElement('span');
+                fallback.className = 'hidden font-mono text-xl font-black text-gray-500';
+                fallback.textContent = sign.code;
+                const image = document.createElement('img');
+                image.className = 'h-full w-full object-contain p-2 transition duration-200 group-hover:scale-105';
+                image.src = sign.image;
+                image.alt = `${sign.title} (${sign.code})`;
+                image.loading = 'lazy';
+                image.decoding = 'async';
+                image.addEventListener('error', () => {
+                    image.classList.add('hidden');
+                    fallback.classList.remove('hidden');
+                }, { once: true });
+                imageBox.append(image, fallback);
+
+                const title = document.createElement('h3');
+                title.className = 'min-h-10 text-center text-xs font-bold leading-relaxed text-gray-200 sm:text-sm';
+                title.textContent = sign.title;
+                card.append(heading, imageBox, title);
+                grid.appendChild(card);
+            });
+        }
+
+        function filterSignCategory(category) {
+            activeSignCategory = category;
+            document.querySelectorAll('.sign-cat-btn').forEach(button => {
+                const selected = button.dataset.category === category;
+                button.className = selected
+                    ? 'sign-cat-btn rounded-xl bg-neon-500 px-4 py-2 text-xs font-bold text-black transition'
+                    : 'sign-cat-btn rounded-xl border border-gray-800 bg-cardBg px-4 py-2 text-xs font-bold text-gray-300 transition hover:border-neon-500/40';
+            });
+            filterSigns();
+        }
+
+        function filterSigns() {
+            initRoadSigns(activeSignCategory, document.getElementById('sign-search-input').value);
+        }
+
+        // --- Color Perception Test (With Multiple Choice) ---
+        let currentColorIndex = 0;
+        let colorCorrectAnswers = 0;
+        let colorWrongAnswers = 0;
+        const colorPerceptionQuestions = [
+            {
+                q: "Ի՞նչ թիվ եք տեսնում առաջին պատկերում:",
+                image: "images/logo.jpg",
+                options: [24, 74, 12, 89],
+                correct: 1
+            },
+            {
+                q: "Ի՞նչ թիվ եք տեսնում երկրորդ պատկերում:",
+                image: "images/logo.jpg",
+                options: [6, 8, 3, 5],
+                correct: 0
+            },
+            {
+                q: "Ի՞նչ թիվ եք տեսնում երրորդ պատկերում:",
+                image: "images/color-test/question_3.png",
+                options: [29, 26, 70, 35],
+                correct: 0
+            },
+            {
+                q: "Ի՞նչ թիվ եք տեսնում չորրորդ պատկերում:",
+                image: "images/color-test/question_4.png",
+                options: [42, 12, 71, 19],
+                correct: 1
+            },
+            {
+                q: "Ի՞նչ թիվ եք տեսնում հինգերորդ պատկերում:",
+                image: "images/color-test/question_5.png",
+                options: [45, 15, 75, 25],
+                correct: 2
+            }
+        ];
+
+        function renderColorTestPlate() {
+            const question = colorPerceptionQuestions[currentColorIndex];
+            document.getElementById('color-plate-frame').classList.remove('hidden');
+            document.getElementById('color-options-grid').classList.remove('hidden');
+            document.getElementById('color-question-progress').innerText =
+                `Հարց ${currentColorIndex + 1} / ${colorPerceptionQuestions.length}`;
+            document.getElementById('color-question-text').innerText = question.q;
+            const image = document.getElementById('color-question-image');
+            const placeholder = document.getElementById('color-image-placeholder');
+            image.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+            document.getElementById('color-image-path').innerText = question.image;
+            image.onload = () => {
+                image.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            };
+            image.onerror = () => {
+                image.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            };
+            image.src = question.image;
+
+            const grid = document.getElementById('color-options-grid');
+            grid.innerHTML = '';
+            document.getElementById('color-feedback').innerText = '';
+            document.getElementById('color-feedback').className = 'text-sm font-semibold min-h-[24px] pt-2';
+            document.getElementById('color-test-results').classList.add('hidden');
+            document.getElementById('next-color-btn').classList.add('hidden');
+            document.getElementById('restart-color-test-btn').classList.add('hidden');
+
+            question.options.forEach((option, optionIndex) => {
+                const btn = document.createElement('button');
+                btn.className = "p-4 rounded-2xl bg-black/50 border border-gray-700 text-white font-mono text-lg font-bold hover:border-neon-400 hover:bg-neon-500/10 transition shadow";
+                btn.innerText = option;
+                btn.onclick = () => submitColorAnswer(optionIndex, question.correct, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function submitColorAnswer(selectedIndex, correctIndex, btnElement) {
+            const feedback = document.getElementById('color-feedback');
+            const allBtns = document.querySelectorAll('#color-options-grid button');
+            const question = colorPerceptionQuestions[currentColorIndex];
+
+            allBtns.forEach(b => b.disabled = true);
+
+            if (selectedIndex === correctIndex) {
+                colorCorrectAnswers++;
+                btnElement.className = "p-4 rounded-2xl bg-neon-500/20 border border-neon-400 text-neon-400 font-mono text-lg font-bold shadow-lg";
+                feedback.innerText = "✓ Շատ լավ է: Ճիշտ պատասխան:";
+                feedback.className = "text-sm font-semibold text-neon-400 pt-2";
+            } else {
+                colorWrongAnswers++;
+                btnElement.className = "p-4 rounded-2xl bg-red-500/20 border border-red-400 text-red-300 font-mono text-lg font-bold shadow-lg";
+                const correctButton = allBtns[correctIndex];
+                correctButton.className = "p-4 rounded-2xl bg-neon-500/20 border border-neon-400 text-neon-400 font-mono text-lg font-bold shadow-lg";
+                feedback.innerText = `✕ Սխալ պատասխան: Ճիշտ թիվն էր՝ ${question.options[correctIndex]}`;
+                feedback.className = "text-sm font-semibold text-red-400 pt-2";
+            }
+
+            const nextButton = document.getElementById('next-color-btn');
+            nextButton.innerText = currentColorIndex === colorPerceptionQuestions.length - 1
+                ? 'Ավարտել թեստը ✓'
+                : 'Հաջորդ հարցը →';
+            nextButton.classList.remove('hidden');
+        }
+
+        function nextColorPlate() {
+            if (currentColorIndex < colorPerceptionQuestions.length - 1) {
+                currentColorIndex++;
+                renderColorTestPlate();
+                return;
+            }
+
+            document.getElementById('color-plate-frame').classList.add('hidden');
+            document.getElementById('color-question-image').removeAttribute('src');
+            document.getElementById('color-options-grid').classList.add('hidden');
+            document.getElementById('color-question-progress').innerText =
+                `Ավարտված է՝ ${colorPerceptionQuestions.length} հարց`;
+            document.getElementById('color-question-text').innerText =
+                'Շնորհավորում ենք, ավարտեցիք գունընկալման թեստը:';
+            document.getElementById('color-feedback').innerText =
+                'Այս թեստը ուսումնական նպատակով է և չի փոխարինում մասնագիտական բժշկական հետազոտությանը։';
+            document.getElementById('color-feedback').className =
+                'text-sm font-semibold min-h-[24px] pt-2 text-gray-400';
+            showColorTestResults();
+            document.getElementById('next-color-btn').classList.add('hidden');
+            document.getElementById('restart-color-test-btn').classList.remove('hidden');
+        }
+
+        function showColorTestResults() {
+            const totalQuestions = colorPerceptionQuestions.length;
+            const percentage = Math.round((colorCorrectAnswers / totalQuestions) * 100);
+            document.getElementById('color-result-correct').innerText = colorCorrectAnswers;
+            document.getElementById('color-result-wrong').innerText = colorWrongAnswers;
+            document.getElementById('color-result-percentage').innerText = `${percentage}%`;
+            const progress = document.getElementById('color-result-progress');
+            progress.style.width = `${percentage}%`;
+            progress.parentElement.setAttribute('aria-valuenow', String(percentage));
+            document.getElementById('color-test-results').classList.remove('hidden');
+        }
+
+        function restartColorTest() {
+            currentColorIndex = 0;
+            colorCorrectAnswers = 0;
+            colorWrongAnswers = 0;
+            renderColorTestPlate();
+        }
+
+        // --- Tests Engine (60 tests, 20 questions) ---
+        window.addEventListener('load', function () {
+            initTestsGrid();
+            initRoadSigns();
+            renderColorTestPlate();
+
+            if (typeof restoreTestProgress === 'function' && !window.testProgressAuthManaged) {
+                restoreTestProgress();
+            }
+        });
+
+    </script>
+</body>
+
+</html>
