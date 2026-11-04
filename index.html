@@ -9,9 +9,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="harcer.js"></script>
     <script defer src="test.js"></script>
-    <script defer src="supabase-config.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script defer src="supabase-auth.js"></script>
+    <script defer src="firebase-config.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script defer src="firebase-auth.js"></script>
     <script defer src="data.js"></script>
     <link rel="icon" href="images/logo-removebg-preview.png" type="image/png">
 
@@ -178,7 +180,7 @@
                 <button onclick="closeAuthModal()" aria-label="Փակել"
                     class="rounded-lg px-3 py-1 text-gray-400 hover:text-white">✕</button>
             </div>
-            <p class="text-sm text-gray-400">Մուտք գործեք՝ ձեր թեստերի առաջընթացը պահպանելու և այլ սարքից շարունակելու համար։</p>
+            <p class="text-sm text-gray-400">Գրանցվելու համար օգտագործեք ձեր գործող էլ․ փոստը։ Մուտքը հասանելի կլինի հասցեն հաստատելուց հետո։</p>
             <form id="auth-form" class="space-y-3" onsubmit="event.preventDefault(); signInUser();">
                 <label class="block space-y-1 text-sm text-gray-300">
                     <span>Էլ․ փոստ</span>
@@ -187,9 +189,10 @@
                 </label>
                 <label class="block space-y-1 text-sm text-gray-300">
                     <span>Գաղտնաբառ</span>
-                    <input id="auth-password" type="password" autocomplete="current-password" minlength="6" required
+                    <input id="auth-password" type="password" autocomplete="current-password" minlength="8" required
                         class="w-full rounded-xl border border-gray-700 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon-400">
                 </label>
+                <p class="text-xs text-gray-500">Գրանցման գաղտնաբառը՝ առնվազն 8 նիշ, մեծատառ, փոքրատառ և թիվ։</p>
                 <p id="auth-message" class="hidden text-sm" role="status"></p>
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <button type="submit"
@@ -393,6 +396,13 @@
                             style="width: 0%"></div>
                     </div>
                     <p id="tests-progress-account-note" class="text-xs text-gray-500">Առաջընթացը պահվում է այս սարքում։ Մուտք գործեք՝ ձեր հաշվում այն պահպանելու համար։</p>
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <p id="overall-progress-reset-status" class="text-xs text-gray-400" aria-live="polite"></p>
+                        <button type="button" onclick="resetAllTestProgress()"
+                            class="self-start rounded-lg border border-red-500/40 px-4 py-2 text-xs font-bold text-red-300 transition hover:border-red-400 hover:bg-red-500/10">
+                            Զրոյացնել արդյունքները
+                        </button>
+                    </div>
                 </div>
 
                 <div

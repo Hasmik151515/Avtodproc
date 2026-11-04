@@ -13115,6 +13115,52 @@ function clearTestProgress() {
     if (!window.currentProgressUserId) localStorage.removeItem(TEST_PROGRESS_KEY);
 }
 
+window.resetAllTestProgress = async function () {
+    const confirmed = window.confirm(
+        'Վստա՞հ եք, որ ուզում եք զրոյացնել բոլոր թեստերի արդյունքներն ու պահված ընթացիկ փորձը։ Այս գործողությունը հետարկել հնարավոր չէ։'
+    );
+    if (!confirmed) return;
+
+    const button = document.querySelector('#tests-selector-view button[onclick="resetAllTestProgress()"]');
+    const status = document.getElementById('overall-progress-reset-status');
+    if (button) button.disabled = true;
+    if (status) status.textContent = 'Զրոյացնում ենք առաջընթացը…';
+
+    try {
+        if (typeof window.resetTestProgressInCloud === 'function') {
+            await window.resetTestProgressInCloud();
+        }
+
+        if (testTimerInterval) clearInterval(testTimerInterval);
+        testTimerInterval = null;
+        currentTestId = null;
+        currentQuestionsList = [];
+        currentQuestionIndex = 0;
+        userSelectedAnswers = {};
+        timeRemainingSeconds = 30 * 60;
+        testAttemptFinished = false;
+
+        testHistory = {};
+        localStorage.setItem(getTestHistoryStorageKey(), JSON.stringify(testHistory));
+        localStorage.removeItem(getTestProgressStorageKey());
+        if (!window.currentProgressUserId) {
+            localStorage.removeItem(TEST_HISTORY_KEY);
+            localStorage.removeItem(TEST_PROGRESS_KEY);
+        }
+        updateAllTestHistoryDisplays();
+
+        document.getElementById('active-test-view')?.classList.add('hidden');
+        document.getElementById('test-results-view')?.classList.add('hidden');
+        document.getElementById('tests-selector-view')?.classList.remove('hidden');
+        if (status) status.textContent = 'Բոլոր թեստերի արդյունքներն ու ընթացիկ փորձը զրոյացվեցին։';
+    } catch (error) {
+        console.error('Could not reset test progress:', error);
+        if (status) status.textContent = `Չհաջողվեց զրոյացնել․ ${error.message || error}`;
+    } finally {
+        if (button) button.disabled = false;
+    }
+};
+
 // Էջը բեռնվելիս ստեղծում է 60 թեստերի կոճակները ցանցում (Grid)
 function initTestsGrid() {
     const gridContainer = document.getElementById('tests-grid-container');
