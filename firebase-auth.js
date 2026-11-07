@@ -154,6 +154,7 @@
             if (!currentUser || currentUser.uid !== user.uid) return;
             console.error('Could not load user test progress:', error);
             setSyncStatus(`Առաջընթացը չհաջողվեց բեռնել․ ${error.message || error}`, true);
+            window.restoreTestProgress();
             return;
         }
         if (!currentUser || currentUser.uid !== user.uid) return;
@@ -166,7 +167,11 @@
             .sort((a, b) => Date.parse(b.updated_at) - Date.parse(a.updated_at))[0];
         if (savedAttempt) {
             window.switchTab('tests');
-            window.restoreCloudTestAttempt(savedAttempt.active_attempt);
+            const cloudAttempt = { ...savedAttempt.active_attempt };
+            if (!Number.isFinite(Number(cloudAttempt.updatedAt)) || Number(cloudAttempt.updatedAt) <= 0) {
+                cloudAttempt.updatedAt = Date.parse(savedAttempt.updated_at) || 0;
+            }
+            window.restoreCloudTestAttempt(cloudAttempt);
         } else {
             window.restoreTestProgress();
         }
@@ -288,7 +293,7 @@
     window.signOutUser = async function () {
         if (!auth || !currentUser) return;
         if (!document.getElementById('active-test-view').classList.contains('hidden')) {
-            window.backToTestsList();
+            await window.backToTestsList();
         }
         await flushPendingAttempt();
         try {

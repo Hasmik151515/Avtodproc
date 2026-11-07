@@ -166,9 +166,11 @@
                 class="block w-full text-left px-4 py-2 rounded-lg font-medium text-gray-200 hover:bg-neon-500/10 hover:text-neon-400 text-sm">Մեր
                 մասին</button>
             <button id="mobile-auth-open-button" onclick="openAuthModal(); toggleMobileMenu();"
-                class="block w-full text-left px-4 py-2 rounded-lg font-bold text-neon-400 hover:bg-neon-500/10 text-sm">Մուտք / Գրանցում</button>
+                class="block w-full text-left px-4 py-2 rounded-lg font-bold text-neon-400 hover:bg-neon-500/10 text-sm">Մուտք
+                / Գրանցում</button>
             <button id="mobile-auth-signout-button" onclick="signOutUser(); toggleMobileMenu();"
-                class="hidden w-full text-left px-4 py-2 rounded-lg font-bold text-red-400 hover:bg-red-500/10 text-sm">Դուրս գալ</button>
+                class="hidden w-full text-left px-4 py-2 rounded-lg font-bold text-red-400 hover:bg-red-500/10 text-sm">Դուրս
+                գալ</button>
         </div>
     </header>
 
@@ -180,7 +182,8 @@
                 <button onclick="closeAuthModal()" aria-label="Փակել"
                     class="rounded-lg px-3 py-1 text-gray-400 hover:text-white">✕</button>
             </div>
-            <p class="text-sm text-gray-400">Գրանցվելու համար օգտագործեք ձեր գործող էլ․ փոստը։ Մուտքը հասանելի կլինի հասցեն հաստատելուց հետո։</p>
+            <p class="text-sm text-gray-400">Գրանցվելու համար օգտագործեք ձեր գործող էլ․ փոստը։ Մուտքը հասանելի կլինի
+                հասցեն հաստատելուց հետո։</p>
             <form id="auth-form" class="space-y-3" onsubmit="event.preventDefault(); signInUser();">
                 <label class="block space-y-1 text-sm text-gray-300">
                     <span>Էլ․ փոստ</span>
@@ -196,7 +199,8 @@
                 <p id="auth-message" class="hidden text-sm" role="status"></p>
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <button type="submit"
-                        class="rounded-xl bg-neon-400 px-4 py-3 font-bold text-black hover:bg-neon-500">Մուտք գործել</button>
+                        class="rounded-xl bg-neon-400 px-4 py-3 font-bold text-black hover:bg-neon-500">Մուտք
+                        գործել</button>
                     <button type="button" onclick="registerUser()"
                         class="rounded-xl border border-neon-500/40 bg-neon-500/10 px-4 py-3 font-bold text-neon-400 hover:bg-neon-500/20">Գրանցվել</button>
                 </div>
@@ -390,12 +394,13 @@
                     <div id="overall-test-progress-bar" class="flex h-3 overflow-hidden rounded-full bg-gray-700"
                         role="progressbar" aria-label="60 թեստերի ընդհանուր առաջընթաց" aria-valuemin="0"
                         aria-valuemax="60" aria-valuenow="0">
-                        <div id="overall-tests-passed-bar" class="h-full bg-neon-400 transition-all"
-                            style="width: 0%"></div>
-                        <div id="overall-tests-failed-bar" class="h-full bg-red-500 transition-all"
-                            style="width: 0%"></div>
+                        <div id="overall-tests-passed-bar" class="h-full bg-neon-400 transition-all" style="width: 0%">
+                        </div>
+                        <div id="overall-tests-failed-bar" class="h-full bg-red-500 transition-all" style="width: 0%">
+                        </div>
                     </div>
-                    <p id="tests-progress-account-note" class="text-xs text-gray-500">Առաջընթացը պահվում է այս սարքում։ Մուտք գործեք՝ ձեր հաշվում այն պահպանելու համար։</p>
+                    <p id="tests-progress-account-note" class="text-xs text-gray-500">Առաջընթացը պահվում է այս սարքում։
+                        Մուտք գործեք՝ ձեր հաշվում այն պահպանելու համար։</p>
                     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <p id="overall-progress-reset-status" class="text-xs text-gray-400" aria-live="polite"></p>
                         <button type="button" onclick="resetAllTestProgress()"
@@ -469,6 +474,20 @@
                     </div>
                 </div>
 
+                <div class="rounded-2xl border border-neon-500/20 bg-cardBg p-4">
+                    <button id="question-navigation-toggle" type="button" onclick="toggleQuestionNavigation()"
+                        aria-expanded="false" aria-controls="question-navigation"
+                        class="flex w-full items-center justify-between text-left text-sm font-bold text-neon-400 hover:text-neon-300">
+                        <span>Հարցերի ցանկը</span>
+                        <span id="question-navigation-toggle-label">Ցույց տալ համարները</span>
+                    </button>
+                    <nav id="question-navigation" class="mt-4 hidden" aria-label="Թեստի հարցերի համարներ">
+                        <div id="question-navigation-numbers" class="grid grid-cols-5 gap-2 sm:grid-cols-10"></div>
+                        <p id="question-navigation-status" class="mt-3 text-xs text-gray-400" aria-live="polite"></p>
+                        <p class="mt-1 text-xs text-gray-500">Սեղմեք համարին՝ համապատասխան հարցին անցնելու համար։ Կանաչ համարները պատասխանված են։</p>
+                    </nav>
+                </div>
+
                 <!-- Question Card -->
                 <div
                     class="bg-cardBg border border-neon-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-8 relative overflow-hidden">
@@ -485,6 +504,7 @@
                         <h4 id="question-text" class="text-lg sm:text-xl font-bold text-gray-100 leading-relaxed">
                             Հարցի տեքստը կբեռնվի այստեղ...
                         </h4>
+                        <p id="question-commentary" class="text-sm leading-relaxed text-gray-300"></p>
                     </div>
 
                     <!-- Optional Question Image / Sign Placeholder -->
@@ -605,6 +625,7 @@
                     </div>
 
                     <h4 id="thematic-q-text" class="text-lg font-bold text-white leading-relaxed">Հարց...</h4>
+                    <p id="thematic-commentary" class="text-sm leading-relaxed text-gray-300"></p>
 
                     <!-- Պատասխանների կոնտեյներ -->
                     <div id="thematic-options-container" class="space-y-3"></div>
