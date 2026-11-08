@@ -58,8 +58,7 @@ function initTestsGrid() {
         btn.className = "p-4 rounded-2xl bg-cardBg border border-neon-500/20 hover:border-neon-400 hover:bg-cardHover transition-all flex flex-col items-center justify-center space-y-2 group shadow-lg";
         btn.innerHTML = `
                     <div class="w-10 h-10 rounded-xl bg-neon-500/10 group-hover:bg-neon-400 group-hover:text-black text-neon-400 font-extrabold flex items-center justify-center transition">${i}</div>
-                    <span class="text-xs font-bold text-gray-300 group-hover:text-white">Թեստ #${i}</span>
-                    <span class="text-[10px] text-gray-500">20 հարց</span>
+                    <span class="text-xs font-bold text-gray-300 group-hover:text-white">Թեստ ${i}</span>
                 `;
         btn.onclick = () => startTest(i);
         container.appendChild(btn);
@@ -13215,6 +13214,14 @@ function getTestHistory(testId) {
     };
 }
 
+function getLatestTestScoreLabel(testId) {
+    const history = getTestHistory(testId);
+    const total = allTestsDatabases[testId]?.length || 20;
+    const attempts = history.passed + history.failed;
+    if (!history.lastResult || attempts !== 1) return '0/' + total;
+    return Math.max(total - history.wrongAnswers, 0) + '/' + total;
+}
+
 function updateTestHistoryDisplay(testId) {
     const history = getTestHistory(testId);
     const totalAttempts = history.passed + history.failed;
@@ -13224,19 +13231,15 @@ function updateTestHistoryDisplay(testId) {
     const progressEl = document.getElementById('test-history-progress');
     if (passedEl) passedEl.innerText = String(history.passed);
     if (failedEl) failedEl.innerText = String(history.failed);
-    if (progressEl) {
-        progressEl.style.width = `${passPercent}%`;
-        progressEl.setAttribute('aria-valuenow', String(passPercent));
-    }
-
-    const wrongAnswersEl = document.getElementById(`test-history-wrong-${testId}`);
-    if (wrongAnswersEl) wrongAnswersEl.innerText = String(history.wrongAnswers);
+    if (progressEl) { progressEl.style.width = passPercent + '%'; progressEl.setAttribute('aria-valuenow', String(passPercent)); }
+    const scoreEl = document.getElementById('test-history-wrong-' + testId);
+    if (scoreEl) scoreEl.innerText = getLatestTestScoreLabel(testId);
 }
 
 function updateAllTestHistoryDisplays() {
     for (let testId = 1; testId <= 60; testId++) {
-        const wrongAnswersEl = document.getElementById(`test-history-wrong-${testId}`);
-        if (wrongAnswersEl) wrongAnswersEl.innerText = String(getTestHistory(testId).wrongAnswers);
+        const scoreEl = document.getElementById('test-history-wrong-' + testId);
+        if (scoreEl) scoreEl.innerText = getLatestTestScoreLabel(testId);
     }
     updateOverallTestProgress();
 }
@@ -13446,8 +13449,7 @@ function initTestsGrid() {
                 ${t}
             </div>
             <div class="text-white font-bold text-sm group-hover:text-neon-400 transition">Թեստ #${t}</div>
-            <div class="text-[10px] text-gray-400">${questionCount} հարց</div>
-            <div class="text-[10px] text-red-400">Նախկին սխալներ՝ <span id="test-history-wrong-${t}">0</span></div>
+            <div class="text-[10px] text-neon-400"><span id="test-history-wrong-${t}">0/${questionCount}</span></div>
         `;
         testCard.onclick = () => startTest(t);
         gridContainer.appendChild(testCard);
@@ -13697,14 +13699,10 @@ function finishTest() {
     const percentage = Math.round((correctCount / totalQuestions) * 100);
     const isPassed = correctCount >= Math.ceil(totalQuestions * 0.9);
     const history = getTestHistory(currentTestId);
-    if (isPassed) {
-        history.passed++;
-        history.lastResult = 'passed';
-    } else {
-        history.failed++;
-        history.lastResult = 'failed';
-    }
-    history.wrongAnswers += wrongCount;
+    history.passed = isPassed ? 1 : 0;
+    history.failed = isPassed ? 0 : 1;
+    history.wrongAnswers = wrongCount;
+    history.lastResult = isPassed ? 'passed' : 'failed';
     testHistory[currentTestId] = history;
     saveTestHistory(currentTestId);
     updateTestHistoryDisplay(currentTestId);
