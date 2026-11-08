@@ -625,7 +625,13 @@
                     </div>
 
                     <h4 id="thematic-q-text" class="text-lg font-bold text-white leading-relaxed">Հարց...</h4>
-                    <p id="thematic-commentary" class="text-sm leading-relaxed text-gray-300"></p>
+                    <button id="thematic-commentary-toggle" type="button" onclick="toggleThematicCommentary()"
+                        aria-expanded="false" aria-controls="thematic-commentary"
+                        class="hidden text-sm font-bold text-neon-400 hover:text-neon-300">
+                        Կարդալ մեկնաբանությունը
+                    </button>
+                    <p id="thematic-commentary"
+                        class="hidden rounded-xl border border-neon-500/20 bg-black/20 p-4 text-sm leading-relaxed text-gray-300"></p>
 
                     <!-- Պատասխանների կոնտեյներ -->
                     <div id="thematic-options-container" class="space-y-3"></div>
@@ -1151,6 +1157,11 @@
             title: signNameByCode[code] || `Ճանապարհային նշան ${code}`,
             image: `https://www.drift.am/img/aaaaa/${signImageFileByCode[code] || code}.${category.id === 'recognition' ? 'jpg' : 'png'}`
         })));
+
+        window.getRoadSignNameByCode = function (code) {
+            const sign = roadSignsData.find(item => item.code === code);
+            return sign ? sign.title : `Ճանապարհային նշան ${code}`;
+        };
 
         window.showRoadSignByCode = function (code) {
             const sign = roadSignsData.find(item => item.code === code);
