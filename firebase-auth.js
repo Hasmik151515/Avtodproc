@@ -63,16 +63,17 @@
     function setSignedInControls(user) {
         const email = document.getElementById('auth-user-email');
         const openButton = document.getElementById('auth-open-button');
+        const accountMenu = document.getElementById('auth-account-menu');
         const signoutButton = document.getElementById('auth-signout-button');
         const mobileOpenButton = document.getElementById('mobile-auth-open-button');
         const mobileSignoutButton = document.getElementById('mobile-auth-signout-button');
         const signedIn = !!user;
         if (email) {
             email.textContent = signedIn ? user.email || 'Հաշիվ' : '';
-            email.classList.toggle('hidden', !signedIn);
         }
         if (openButton) openButton.classList.toggle('hidden', signedIn);
-        if (signoutButton) signoutButton.classList.toggle('hidden', !signedIn);
+        if (accountMenu) accountMenu.classList.toggle('hidden', !signedIn);
+        if (signoutButton) signoutButton.classList.remove('hidden');
         if (mobileOpenButton) mobileOpenButton.classList.toggle('hidden', signedIn);
         if (mobileSignoutButton) mobileSignoutButton.classList.toggle('hidden', !signedIn);
     }
