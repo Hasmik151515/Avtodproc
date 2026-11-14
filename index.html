@@ -15,6 +15,7 @@
     <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script defer src="firebase-auth.js"></script>
     <script defer src="data.js"></script>
+    <script defer src="script.js"></script>
     <link rel="icon" href="images/logo-removebg-preview.png" type="image/png">
 
 
@@ -67,6 +68,175 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: #22c55e;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 5.5rem;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-width: 320px;
+            overflow-x: hidden;
+        }
+
+        img,
+        iframe,
+        video {
+            max-width: 100%;
+        }
+
+        button,
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        dialog {
+            max-width: calc(100vw - 1.5rem);
+            max-height: calc(100dvh - 2rem);
+        }
+
+        @media (max-width: 1023px) {
+            header>div:first-child {
+                min-height: 4.25rem;
+                height: auto;
+            }
+
+            header img[alt*="Վարորդի Տուն"] {
+                max-width: min(42vw, 230px);
+                height: 3.5rem;
+            }
+
+            #mobile-menu {
+                max-height: calc(100dvh - 4.25rem);
+                overflow-y: auto;
+                overscroll-behavior: contain;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .tab-section {
+                padding: 1.5rem 1rem 2.25rem;
+            }
+
+            .tab-section h2 {
+                font-size: clamp(1.5rem, 6vw, 2rem);
+                line-height: 1.2;
+            }
+
+            #thematic-session-summary-view>.grid:last-child {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            #thematic-review-unanswered-button {
+                grid-column: 1 / -1;
+            }
+
+            #thematic-practice-view>div:first-child {
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            #thematic-progress-indicator {
+                max-width: 46%;
+                padding: .55rem .7rem;
+                text-align: center;
+                white-space: normal;
+                line-height: 1.4;
+            }
+
+            #thematic-question-navigation-numbers {
+                grid-template-columns: repeat(6, minmax(0, 1fr));
+            }
+
+            #auth-modal>div {
+                max-height: calc(100dvh - 2rem);
+                overflow-y: auto;
+            }
+
+            #toast-box {
+                right: 1rem;
+                bottom: 1rem;
+                left: 1rem;
+                width: auto;
+                max-width: none;
+            }
+
+            footer {
+                margin-top: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header>div:first-child {
+                padding-right: .75rem;
+                padding-left: .75rem;
+            }
+
+            header img[alt*="Վարորդի Տուն"] {
+                max-width: 45vw;
+                height: 3rem;
+            }
+
+            #auth-account-toggle,
+            header button[onclick="toggleMobileMenu()"] {
+                width: 2.5rem;
+                height: 2.5rem;
+                padding: .5rem;
+            }
+
+            .tab-section {
+                padding-right: .8rem;
+                padding-left: .8rem;
+            }
+
+            #thematic-groups-grid,
+            #tests-grid-container {
+                gap: .75rem;
+            }
+
+            #thematic-session-summary-view>.grid:last-child {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            #thematic-review-unanswered-button {
+                grid-column: auto;
+            }
+
+            #thematic-question-navigation-numbers {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+            }
+
+            .fixed.bottom-6.right-6 {
+                right: .75rem;
+                bottom: .75rem;
+                left: .75rem;
+            }
+
+            footer .max-w-7xl {
+                gap: 1.75rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
         }
     </style>
 </head>
@@ -237,7 +407,7 @@
                     <div
                         class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-neon-500/10 border border-neon-500/30 text-neon-400 text-xs font-semibold tracking-wide uppercase">
                         <span class="w-2 h-2 rounded-full bg-neon-400 animate-pulse"></span>
-                        <span>Հայաստանի Հանրապետության ՃЕԿ թեստեր և վարորդական դասընթացներ</span>
+                        <span>Հայաստանի Հանրապետության ՃԵԿ թեստեր և վարորդական դասընթացներ</span>
                     </div>
                     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
                         Ստացիր վարորդական իրավունք <span
@@ -365,6 +535,7 @@
         <section id="section-tests" class="tab-section hidden py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             <!-- Test Selection Grid View -->
             <div id="tests-selector-view" class="space-y-8">
+                <h2 class="text-3xl font-extrabold tracking-tight text-white">Թեստեր</h2>
                 <div class="space-y-4 rounded-3xl border border-neon-500/30 bg-cardBg p-5 sm:p-7 shadow-xl">
                     <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                         <div>
@@ -396,20 +567,7 @@
                     </div>
                 </div>
 
-                <div
-                    class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-gray-800 pb-6">
-                    <div>
-                        <h2 class="text-3xl font-extrabold tracking-tight text-white">Քննական Թեստեր</h2>
-                        <p class="text-gray-400 text-sm mt-1">Ընտրեք թեստը և ստուգեք ձեր գիտելիքները readpolice.am
-                            համակարգին լիովին համապատասխան:</p>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <span
-                            class="px-3 py-1.5 rounded-lg bg-neon-500/10 border border-neon-500/30 text-neon-400 text-xs font-semibold">
-                            Յուրաքանչյուրը՝ 20 հարց
-                        </span>
-                    </div>
-                </div>
+
 
                 <!-- Grid of 60 tests -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
@@ -622,6 +780,54 @@
                 <!--  JavaScript-ն ինքն է այստեղ լցնում 10 խմբերի քարտերը -->
             </div>
 
+            <div id="thematic-session-summary-view" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="rounded-2xl border border-neon-500/30 bg-cardBg p-6 shadow-xl">
+                    <button type="button" onclick="backToThematicGroups()"
+                        class="mb-4 block text-xs font-bold text-neon-400 hover:underline">← Վերադառնալ
+                        թեմաներին</button>
+                    <h3 id="thematic-session-summary-title" class="text-xl font-bold text-white">Թեմայի ամփոփում</h3>
+                    <p id="thematic-session-summary-caption" class="mt-1 text-sm text-gray-400"></p>
+                    <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        <div class="rounded-xl bg-black/20 p-3"><span
+                                class="block text-xs text-gray-400">Ընդհանուր</span><strong id="thematic-session-total"
+                                class="mt-1 block text-xl text-white">0</strong></div>
+                        <div class="rounded-xl bg-black/20 p-3"><span
+                                class="block text-xs text-gray-400">Պատասխանված</span><strong
+                                id="thematic-session-answered" class="mt-1 block text-xl text-neon-400">0</strong></div>
+                        <div class="rounded-xl bg-black/20 p-3"><span
+                                class="block text-xs text-gray-400">Ճիշտ</span><strong id="thematic-session-correct"
+                                class="mt-1 block text-xl text-emerald-400">0</strong></div>
+                        <div class="rounded-xl bg-black/20 p-3"><span
+                                class="block text-xs text-gray-400">Սխալ</span><strong id="thematic-session-wrong"
+                                class="mt-1 block text-xl text-red-400">0</strong></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <button id="thematic-review-correct-button" type="button" onclick="startThematicReview('correct')"
+                        class="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5 text-left transition hover:border-emerald-400 disabled:cursor-not-allowed disabled:opacity-40">
+                        <span class="block text-sm font-bold text-emerald-300">Ճիշտ պատասխաններ</span>
+                        <span id="thematic-review-correct-count"
+                            class="mt-2 block text-2xl font-extrabold text-white">0</span>
+                        <span class="mt-1 block text-xs text-gray-400">Դիտել ճիշտ պատասխանված հարցերը</span>
+                    </button>
+                    <button id="thematic-review-wrong-button" type="button" onclick="startThematicReview('wrong')"
+                        class="rounded-2xl border border-red-500/30 bg-red-500/10 p-5 text-left transition hover:border-red-400 disabled:cursor-not-allowed disabled:opacity-40">
+                        <span class="block text-sm font-bold text-red-300">Սխալ պատասխաններ</span>
+                        <span id="thematic-review-wrong-count"
+                            class="mt-2 block text-2xl font-extrabold text-white">0</span>
+                        <span class="mt-1 block text-xs text-gray-400">Դիտել սխալ պատասխանված հարցերը</span>
+                    </button>
+                    <button id="thematic-review-unanswered-button" type="button"
+                        onclick="startThematicReview('unanswered')"
+                        class="rounded-2xl border border-neon-500/30 bg-neon-500/10 p-5 text-left transition hover:border-neon-400 disabled:cursor-not-allowed disabled:opacity-40">
+                        <span class="block text-sm font-bold text-neon-300">Չլրացված հարցեր</span>
+                        <span id="thematic-review-unanswered-count"
+                            class="mt-2 block text-2xl font-extrabold text-white">0</span>
+                        <span class="mt-1 block text-xs text-gray-400">Շարունակել չլրացված հարցերից</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- 2. ՀԱՐՑԵՐԻ ՊՐԱԿՏԻԿԱՅԻ ՎԻՒԵՒ -->
             <div id="thematic-practice-view" class="hidden max-w-4xl mx-auto space-y-6">
                 <div
@@ -630,6 +836,9 @@
                         <button onclick="backToThematicGroups()"
                             class="text-neon-400 text-xs font-bold hover:underline mb-2 block">← Վերադառնալ
                             խմբերին</button>
+                        <button onclick="backToThematicSessionSummary()"
+                            class="text-neon-400 text-xs font-bold hover:underline mb-2 block">← Վերադառնալ
+                            ամփոփմանը</button>
                         <h3 id="thematic-group-title" class="text-xl font-bold text-white">Խումբ</h3>
                     </div>
                     <div class="px-4 py-2 rounded-xl bg-neon-500/10 border border-neon-500/30 text-neon-400 font-mono font-bold text-sm"
@@ -663,7 +872,7 @@
                         </div>
                     </nav>
                 </dialog>
-                
+
 
 
                 <div class="bg-cardBg border border-neon-500/30 rounded-3xl p-8 space-y-6 shadow-2xl">
@@ -773,11 +982,7 @@
             </div>
 
             <div id="signs-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
-            <p class="text-xs text-gray-500 text-center">
-                Նշանների պատկերները՝
-                <a href="https://www.drift.am/trafficsigns" target="_blank" rel="noopener noreferrer"
-                    class="text-neon-400 hover:underline">Drift.am ճանապարհային նշանների ցանկից</a>։
-            </p>
+
         </section>
 
         <!-- 5. COLOR PERCEPTION TEST SECTION (With Multiple Choice) -->
@@ -1075,1513 +1280,7 @@
     </div>
 
     <!-- JavaScript Logic -->
-    <script>
-        // --- Navigation Tabs ---
-        function toggleAccountMenu(event) {
-            event.stopPropagation();
-            const dropdown = document.getElementById('auth-account-dropdown');
-            const toggle = document.getElementById('auth-account-toggle');
-            if (!dropdown || !toggle) return;
-            const isOpening = dropdown.classList.contains('hidden');
-            dropdown.classList.toggle('hidden', !isOpening);
-            toggle.setAttribute('aria-expanded', String(isOpening));
-        }
 
-        function closeAccountMenu() {
-            const dropdown = document.getElementById('auth-account-dropdown');
-            const toggle = document.getElementById('auth-account-toggle');
-            if (dropdown) dropdown.classList.add('hidden');
-            if (toggle) toggle.setAttribute('aria-expanded', 'false');
-        }
-
-        document.addEventListener('click', event => {
-            const menu = document.getElementById('auth-account-menu');
-            if (menu && !menu.contains(event.target)) closeAccountMenu();
-        });
-
-        function switchTab(tabId) {
-            const targetTabId = tabId === 'pricing' ? 'home' : tabId;
-            const currentSection = document.querySelector('.tab-section:not(.hidden)');
-            if (currentSection && currentSection.id === 'section-tests' && targetTabId !== 'tests' &&
-                typeof exitActiveTestForNavigation === 'function') {
-                exitActiveTestForNavigation();
-            }
-
-            document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
-            document.getElementById('section-' + targetTabId).classList.remove('hidden');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-neon-400', 'bg-neon-500/10', 'border', 'border-neon-500/30');
-                btn.classList.add('text-gray-300');
-            });
-            const activeBtn = document.getElementById('nav-' + tabId);
-            if (activeBtn) {
-                activeBtn.classList.remove('text-gray-300');
-                activeBtn.classList.add('text-neon-400', 'bg-neon-500/10', 'border', 'border-neon-500/30');
-            }
-            if (typeof persistNavigationState === 'function') {
-                persistNavigationState();
-            }
-            if (tabId === 'pricing') {
-                window.requestAnimationFrame(() => {
-                    document.getElementById('section-pricing').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                });
-            } else {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
-
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        }
-
-        function showToast(title, message, isSuccess = true) {
-            const toast = document.getElementById('toast-box');
-            if (!toast) return;
-            document.getElementById('toast-title').innerText = title;
-            document.getElementById('toast-message').innerText = message;
-            document.getElementById('toast-icon').innerText = isSuccess ? '✓' : '⚠️';
-            toast.classList.remove('hidden');
-            setTimeout(() => { toast.classList.add('hidden'); }, 4000);
-        }
-
-
-
-        // --- Road Signs Catalog ---
-        const signCategories = [
-            { id: 'warning', title: 'Նախազգուշացնող նշաններ', codes: '1.1 1.2 1.3.1 1.3.2 1.4.1 1.4.2 1.4.3 1.4.4 1.4.5 1.4.6 1.5 1.6 1.7 1.8 1.9 1.10 1.11.1 1.11.2 1.12.1 1.12.2 1.13 1.14 1.15 1.16 1.17 1.18 1.19 1.20.1 1.20.2 1.20.3 1.21 1.22 1.23 1.24 1.25 1.26 1.27 1.28 1.29 1.30 1.31 1.32 1.33 1.34.1 1.34.2 1.34.3 1.34.11 1.34.12 1.34.21 1.34.23 1.34.31' },
-            { id: 'priority', title: 'Առավելության նշաններ', codes: '2.1 2.2 2.3.1 2.3.2 2.3.3 2.3.4 2.3.5 2.3.6 2.3.7 2.4 2.5 2.6 2.7' },
-            { id: 'prohibitory', title: 'Արգելող նշաններ', codes: '3.1 3.2 3.3 3.4 3.5 3.6 3.7 3.8 3.9 3.10 3.11 3.12 3.13 3.14 3.15 3.16 3.17.1 3.17.2 3.17.3 3.18.1 3.18.2 3.19 3.20 3.21 3.22 3.23 3.24 3.25 3.26 3.27 3.28 3.29 3.30 3.31 3.32 3.33' },
-            { id: 'mandatory', title: 'Թելադրող նշաններ', codes: '4.1.1 4.1.2 4.1.3 4.1.4 4.1.5 4.1.6 4.2.1 4.2.2 4.2.3 4.3 4.4 4.5 4.6 4.7 4.8.1 4.8.2 4.8.3' },
-            { id: 'special', title: 'Հատուկ թելադրանքի նշաններ', codes: '5.1 5.2 5.3 5.4 5.5 5.6 5.7.1 5.7.2 5.8 5.9 5.10 5.11 5.12 5.13.1 5.13.2 5.14 5.15.1 5.15.2 5.15.2.1 5.15.2.2 5.15.2.3 5.15.3 5.15.3.1 5.15.4 5.15.4.1 5.15.5 5.15.6 5.15.7 5.15.7.1 5.15.7.2 5.15.8 5.16 5.17 5.18 5.19.1 5.19.2 5.20 5.21 5.22 5.23.1 5.23.2 5.24.1 5.24.2 5.25 5.26 5.27 5.28 5.29 5.30 5.31 5.32 5.33 5.34' },
-            { id: 'information', title: 'Տեղեկատվության նշաններ', codes: '6.1 6.2 6.3.1 6.3.2 6.4 6.5 6.6 6.7 6.8.1 6.8.2 6.8.3 6.9 6.9.1 6.9.1.15 6.9.15 6.9.2 6.9.2.2 6.9.2.3 6.9.3 6.10.1 6.10.1.2 6.10.1.2.3 6.10.1.2.4 6.10.1.2.5 6.10.2 6.10.2.1 6.11.1 6.11.2 6.11.3 6.12 6.12.1 6.13 6.14.1 6.14.2 6.14.2.1 6.15.1 6.15.2 6.15.3 6.16 6.17 6.18.1 6.18.2 6.18.3 6.19.1 6.19.2 6.20.1 6.20.2 6.21.1' },
-            { id: 'service', title: 'Սպասարկման նշաններ', codes: '7.1 7.2 7.3 7.4 7.5 7.6 7.7 7.8 7.9 7.10 7.11 7.12 7.13 7.14 7.15 7.16 7.17 7.18 7.19 7.20' },
-            { id: 'supplementary', title: 'Լրացուցիչ տեղեկատվության ցուցանակներ', codes: '8.1.1 8.1.2 8.1.3 8.1.4 8.2.1 8.2.2 8.2.3 8.2.4 8.2.5 8.2.6 8.3.1 8.3.2 8.3.3 8.4.1 8.4.2 8.4.3 8.4.4 8.4.5 8.4.6 8.4.7 8.4.8 8.5.1 8.5.2 8.5.3 8.5.4 8.5.5 8.5.6 8.5.7 8.6.1 8.6.2 8.6.3 8.6.4 8.6.5 8.6.6 8.6.7 8.6.8 8.6.9 8.7 8.8 8.9 8.10 8.11 8.12 8.13 8.14 8.15 8.16 8.17 8.18 8.19 8.20.1 8.20.2 8.21.1 8.21.2 8.21.3 8.22.1 8.22.2 8.22.3' },
-            { id: 'recognition', title: 'Տրանսպորտային միջոցների ճանաչման նշաններ', codes: 'tsr-9.1 tsr-9.2 tsr-9.3 tsr-9.4 tsr-9.5 tsr-9.6 tsr-9.7 tsr-9.8 tsr-9.10 tsr-9.11 tsr-9.12 tsr-9.13' }
-        ];
-
-        const signNameByCode = {
-            '1.1': 'Երկաթուղային գծանց՝ ուղեփակոցով',
-            '1.2': 'Երկաթուղային գծանց՝ առանց ուղեփակոցի',
-            '1.3.1': 'Միագիծ երկաթուղի',
-            '1.3.2': 'Բազմագիծ երկաթուղի',
-            '1.4.1': 'Մոտեցում երկաթուղային գծանցին',
-            '1.4.2': 'Մոտեցում երկաթուղային գծանցին',
-            '1.4.3': 'Մոտեցում երկաթուղային գծանցին',
-            '1.4.4': 'Մոտեցում երկաթուղային գծանցին',
-            '1.4.5': 'Մոտեցում երկաթուղային գծանցին',
-            '1.4.6': 'Մոտեցում երկաթուղային գծանցին',
-            '1.5': 'Հատում տրամվայի գծի հետ',
-            '1.6': 'Հավասարազոր ճանապարհների հատում',
-            '1.7': 'Հատում շրջանաձև երթևեկության հետ',
-            '1.8': 'Լուսացուցային կարգավորում',
-            '1.9': 'Բացվող կամուրջ',
-            '1.10': 'Ելք դեպի առափ',
-            '1.11.1': 'Վտանգավոր շրջադարձ դեպի աջ',
-            '1.11.2': 'Վտանգավոր շրջադարձ դեպի ձախ',
-            '1.12.1': 'Վտանգավոր շրջադարձեր',
-            '1.12.2': 'Վտանգավոր շրջադարձեր',
-            '1.13': 'Կտրուկ վայրէջք',
-            '1.14': 'Կտրուկ վերելք',
-            '1.15': 'Սայթաքուն ճանապարհ',
-            '1.16': 'Անհարթ ճանապարհ',
-            '1.17': 'Արհեստական անհարթություն',
-            '1.18': 'Խճի արտանետում',
-            '1.19': 'Վտանգավոր կողնակ',
-            '1.20.1': 'Ճանապարհի նեղացում',
-            '1.20.2': 'Ճանապարհի նեղացում աջից',
-            '1.20.3': 'Ճանապարհի նեղացում ձախից',
-            '1.21': 'Երկկողմ երթևեկություն',
-            '1.22': 'Հետիոտնային անցում',
-            '1.23': 'Երեխաներ',
-            '1.24': 'Հատում հեծանվային արահետի հետ',
-            '1.25': 'Ճանապարհային աշխատանքներ',
-            '1.26': 'Անասունների քշում',
-            '1.27': 'Վայրի կենդանիներ',
-            '1.28': 'Քարերի անկում',
-            '1.29': 'Կողային քամի',
-            '1.30': 'Ցածրաթռիչք ինքնաթիռներ',
-            '1.31': 'Թունել',
-            '1.32': 'Խցանում',
-            '1.33': 'Այլ վտանգներ',
-            '2.1': 'Գլխավոր ճանապարհ',
-            '2.2': 'Գլխավոր ճանապարհի վերջ',
-            '2.4': 'Զիջեք ճանապարհը',
-            '2.5': 'Երթևեկությունն առանց կանգառի արգելվում է',
-            '2.6': 'Հանդիպակաց երթևեկության առավելություն',
-            '2.7': 'Առավելություն հանդիպակաց երթևեկության նկատմամբ',
-            '3.6': 'Տրակտորների երթևեկությունն արգելվում է',
-            '3.7': 'Կցորդով երթևեկությունն արգելվում է',
-            '3.8': 'Լծասայլերի երթևեկությունն արգելվում է',
-            '3.11': 'Զանգվածի սահմանափակում',
-            '3.12': 'Սռնու բեռնվածության սահմանափակում',
-            '3.13': 'Բարձրության սահմանափակում',
-            '3.14': 'Լայնության սահմանափակում',
-            '3.15': 'Երկարության սահմանափակում',
-            '3.16': 'Նվազագույն միջտարածության սահմանափակում',
-            '3.17.1': 'Մաքսային կետ',
-            '3.17.2': 'Վտանգ',
-            '3.17.3': 'Հսկիչ կետ',
-            '3.21': 'Վազանցի արգելման գոտու վերջ',
-            '3.22': 'Բեռնատար ավտոմոբիլներով վազանցն արգելվում է',
-            '3.23': 'Բեռնատար ավտոմոբիլներով վազանցի արգելման գոտու վերջ',
-            '3.25': 'Առավելագույն արագության սահմանափակման գոտու վերջ',
-            '3.26': 'Ձայնային ազդանշան տալն արգելվում է',
-            '3.29': 'Կայանելն արգելվում է ամսվա կենտ օրերին',
-            '3.30': 'Կայանելն արգելվում է ամսվա զույգ օրերին',
-            '3.31': 'Բոլոր սահմանափակումների գոտու վերջ',
-            '3.32': 'Վտանգավոր բեռներով տրանսպորտային միջոցների երթևեկությունն արգելվում է',
-            '3.33': 'Պայթուցիկ և դյուրավառ բեռներով տրանսպորտային միջոցների երթևեկությունն արգելվում է',
-            '4.1.1': 'Երթևեկությունն ուղիղ',
-            '4.1.2': 'Երթևեկությունը դեպի աջ',
-            '4.1.3': 'Երթևեկությունը դեպի ձախ',
-            '4.1.4': 'Երթևեկությունն ուղիղ կամ դեպի աջ',
-            '4.1.5': 'Երթևեկությունն ուղիղ կամ դեպի ձախ',
-            '4.1.6': 'Երթևեկությունը դեպի աջ կամ ձախ',
-            '4.2.1': 'Արգելքի շրջանցումն աջից',
-            '4.2.2': 'Արգելքի շրջանցումը ձախից',
-            '4.2.3': 'Արգելքի շրջանցումն աջից կամ ձախից',
-            '3.1': 'Մուտքն արգելվում է',
-            '3.2': 'Երթևեկությունն արգելվում է',
-            '3.3': 'Մեխանիկական տրանսպորտային միջոցների երթևեկությունն արգելվում է',
-            '3.4': 'Բեռնատար ավտոմոբիլների երթևեկությունն արգելվում է',
-            '3.5': 'Մոտոցիկլների երթևեկությունն արգելվում է',
-            '3.9': 'Հեծանիվներով երթևեկությունն արգելվում է',
-            '3.10': 'Հետիոտների տեղաշարժն արգելվում է',
-            '3.18.1': 'Աջ շրջադարձն արգելվում է',
-            '3.18.2': 'Ձախ շրջադարձն արգելվում է',
-            '3.19': 'Հետադարձն արգելվում է',
-            '3.20': 'Վազանցն արգելվում է',
-            '3.24': 'Առավելագույն արագության սահմանափակում',
-            '3.27': 'Կանգառն արգելվում է',
-            '3.28': 'Կայանելն արգելվում է',
-            '4.3': 'Շրջանաձև երթևեկություն',
-            '5.1': 'Ավտոմայրուղի',
-            '5.2': 'Ավտոմայրուղու վերջ',
-            '5.3': 'Ճանապարհ ավտոմոբիլների համար',
-            '5.4': 'Ավտոմոբիլների համար ճանապարհի վերջ',
-            '5.5': 'Միակողմ երթևեկությամբ ճանապարհ',
-            '5.6': 'Միակողմ երթևեկությամբ ճանապարհի վերջ',
-            '5.8': 'Դարձափոխային երթևեկություն',
-            '5.9': 'Դարձափոխային երթևեկության վերջ',
-            '5.11': 'Ընդհանուր օգտագործման տրանսպորտային միջոցների համար գոտիով ճանապարհ',
-            '5.14': 'Ընդհանուր օգտագործման տրանսպորտային միջոցների համար գոտի',
-            '5.15.1': 'Երթևեկության ուղղությունները գոտիներով',
-            '5.19.1': 'Հետիոտնային անցում',
-            '5.19.2': 'Հետիոտնային անցում',
-            '5.16': 'Ավտոբուսի կամ տրոլեյբուսի կանգառ',
-            '5.17': 'Տրամվայի կանգառ',
-            '5.18': 'Թեթև մարդատար տաքսիների կայանման տեղ',
-            '5.20': 'Արհեստական անհարթություն',
-            '5.21': 'Բնակելի գոտի',
-            '5.22': 'Բնակելի գոտու վերջ',
-            '5.23.1': 'Բնակավայրի սկիզբ',
-            '5.23.2': 'Բնակավայրի սկիզբ',
-            '5.24.1': 'Բնակավայրի վերջ',
-            '5.24.2': 'Բնակավայրի վերջ',
-            '5.25': 'Բնակավայրի սկիզբ',
-            '5.26': 'Բնակավայրի վերջ',
-            '5.27': 'Կայանման սահմանափակումով գոտի',
-            '5.28': 'Կայանման սահմանափակումով գոտու վերջ',
-            '5.29': 'Կարգավորվող կայանման գոտի',
-            '5.30': 'Կարգավորվող կայանման գոտու վերջ',
-            '5.31': 'Առավելագույն արագության սահմանափակումով գոտի',
-            '5.32': 'Առավելագույն արագության սահմանափակումով գոտու վերջ',
-            '5.33': 'Հետիոտնային գոտի',
-            '5.34': 'Հետիոտնային գոտու վերջ',
-            '6.1': 'Առավելագույն արագության ընդհանուր սահմանափակում',
-            '6.2': 'Առաջարկվող արագություն',
-            '6.3.1': 'Հետադարձի տեղ',
-            '6.3.2': 'Հետադարձի գոտի',
-            '6.4': 'Կայանման տեղ',
-            '6.5': 'Վթարային կանգառի գոտի',
-            '6.8.1': 'Փակուղի',
-            '6.9.1': 'Ուղղությունների նախնական ցուցիչ',
-            '6.9.2': 'Ուղղության նախնական ցուցիչ',
-            '6.9.3': 'Երթևեկության սխեմա',
-            '6.10.1': 'Ուղղությունների ցուցիչ',
-            '6.10.2': 'Ուղղության ցուցիչ',
-            '6.11.1': 'Օբյեկտի անվանում',
-            '6.12': 'Հեռավորությունների ցուցիչ',
-            '6.13': 'Կիլոմետրային նշան',
-            '6.14.1': 'Երթուղու համար',
-            '6.15.1': 'Երթևեկության ուղղություն բեռնատարների համար',
-            '6.16': 'Կանգ-գիծ',
-            '6.17': 'Շրջանցման սխեմա',
-            '6.18.1': 'Շրջանցման ուղղություն',
-            '6.19.1': 'Այլ երթևեկելի մաս վերադասավորվելու նախնական ցուցիչ',
-            '6.20.1': 'Վթարային ելք',
-            '6.21.1': 'Դեպի վթարային ելք տեղաշարժման ուղղություն',
-            '6.6': 'Ստորգետնյա հետիոտնային անցում',
-            '6.7': 'Վերգետնյա հետիոտնային անցում',
-            '7.1': 'Առաջին օգնության կետ',
-            '7.2': 'Հիվանդանոց',
-            '7.3': 'Լցակայան',
-            '7.4': 'Տեխնիկական սպասարկում',
-            '7.5': 'Ավտոմեքենայի լվացում',
-            '7.6': 'Հեռախոս',
-            '7.7': 'Սննդի կետ',
-            '7.8': 'Խմելու ջուր',
-            '7.9': 'Հյուրանոց կամ մոթել',
-            '7.10': 'Հանգրվան',
-            '7.11': 'Հանգստի վայր',
-            '7.12': 'Ճանապարհային ոստիկանության պահակետ',
-            '7.13': 'Ոստիկանություն',
-            '7.14': 'Միջազգային ավտոմոբիլային փոխադրումների հսկման կետ',
-            '7.15': 'Ճանապարհային երթևեկության մասին տեղեկություն հաղորդող ռադիոկայան',
-            '7.16': 'Վթարային ծառայությունների հետ ռադիոկապի գոտի',
-            '7.17': 'Լողավազան կամ լողափ',
-            '7.18': 'Զուգարան',
-            '7.19': 'Արտակարգ կապի հեռախոս',
-            '7.20': 'Կրակմարիչ',
-            'tsr-9.1': 'Ավտոգնացք',
-            'tsr-9.2': 'Արագության սահմանափակում',
-            'tsr-9.3': 'Դանդաղընթաց տրանսպորտային միջոց',
-            'tsr-9.4': 'Երեխաների փոխադրում',
-            'tsr-9.5': 'Բութակներ',
-            'tsr-9.6': 'Երկարաչափ տրանսպորտային միջոց',
-            'tsr-9.7': 'Խուլ վարորդ',
-            'tsr-9.8': 'Մեծ եզրաչափերով բեռ',
-            'tsr-9.10': 'Վտանգավոր բեռ',
-            'tsr-9.11': 'Ուսումնական տրանսպորտային միջոց',
-            'tsr-9.12': 'Բժիշկ',
-            'tsr-9.13': 'Հաշմանդամ',
-            '1.34.1': 'Շրջադարձի ուղղություն',
-            '1.34.2': 'Շրջադարձի ուղղություն',
-            '1.34.3': 'Շրջադարձի ուղղություն T-աձև խաչմերուկում',
-            '1.34.11': 'Շրջադարձի ուղղություն',
-            '1.34.12': 'Շրջադարձի ուղղություն',
-            '1.34.21': 'Շրջադարձի ուղղություն',
-            '1.34.23': 'Շրջադարձի ուղղություն',
-            '1.34.31': 'Շրջադարձի ուղղություն T-աձև խաչմերուկում',
-            '2.3.1': 'Հատում երկրորդական ճանապարհի հետ',
-            '2.3.2': 'Երկրորդական ճանապարհի հարում',
-            '2.3.3': 'Երկրորդական ճանապարհի հարում',
-            '2.3.4': 'Երկրորդական ճանապարհի հարում',
-            '2.3.5': 'Երկրորդական ճանապարհի հարում',
-            '2.3.6': 'Երկրորդական ճանապարհի հարում',
-            '2.3.7': 'Երկրորդական ճանապարհի հարում',
-            '4.4': 'Հեծանվային արահետ',
-            '4.5': 'Հետիոտնային արահետ',
-            '4.6': 'Նվազագույն արագության սահմանափակում',
-            '4.7': 'Նվազագույն արագության սահմանափակման գոտու վերջ',
-            '4.8.1': 'Վտանգավոր բեռներով տրանսպորտային միջոցների երթևեկության ուղղություն',
-            '4.8.2': 'Վտանգավոր բեռներով տրանսպորտային միջոցների երթևեկության ուղղություն',
-            '4.8.3': 'Վտանգավոր բեռներով տրանսպորտային միջոցների երթևեկության ուղղություն',
-            '5.7.1': 'Ելք դեպի միակողմ երթևեկությամբ ճանապարհ',
-            '5.7.2': 'Ելք դեպի միակողմ երթևեկությամբ ճանապարհ',
-            '5.10': 'Ելք դեպի դարձափոխային երթևեկությամբ ճանապարհ',
-            '5.12': 'Ընդհանուր օգտագործման տրանսպորտային միջոցների համար գոտիով ճանապարհի վերջ',
-            '5.13.1': 'Ելք դեպի ընդհանուր օգտագործման տրանսպորտային միջոցների համար գոտիով ճանապարհ',
-            '5.13.2': 'Ելք դեպի ընդհանուր օգտագործման տրանսպորտային միջոցների համար գոտիով ճանապարհ',
-            '5.15.2': 'Երթևեկության ուղղությունները գոտիով',
-            '5.15.2.1': 'Երթևեկության ուղղությունները գոտիով',
-            '5.15.2.2': 'Երթևեկության ուղղությունները գոտիով',
-            '5.15.2.3': 'Երթևեկության ուղղությունները գոտիով',
-            '5.15.3': 'Գոտու սկիզբ',
-            '5.15.3.1': 'Գոտու սկիզբ',
-            '5.15.4': 'Գոտու սկիզբ',
-            '5.15.4.1': 'Գոտու սկիզբ',
-            '5.15.5': 'Գոտու վերջ',
-            '5.15.6': 'Գոտու վերջ',
-            '5.15.7': 'Երթևեկության ուղղությունը գոտիներով',
-            '5.15.7.1': 'Երթևեկության ուղղությունը գոտիներով',
-            '5.15.7.2': 'Երթևեկության ուղղությունը գոտիներով',
-            '5.15.8': 'Գոտիների քանակը',
-            '6.8.2': 'Փակուղի',
-            '6.8.3': 'Փակուղի',
-            '6.9': 'Ուղղությունների նախնական ցուցիչ',
-            '6.9.1.15': 'Ուղղությունների նախնական ցուցիչ',
-            '6.9.15': 'Ուղղությունների նախնական ցուցիչ',
-            '6.9.2.2': 'Ուղղությունների նախնական ցուցիչ',
-            '6.9.2.3': 'Ուղղությունների նախնական ցուցիչ',
-            '6.10.1.2': 'Ուղղությունների ցուցիչ',
-            '6.10.1.2.3': 'Ուղղությունների ցուցիչ',
-            '6.10.1.2.4': 'Ուղղությունների ցուցիչ',
-            '6.10.1.2.5': 'Ուղղությունների ցուցիչ',
-            '6.10.2.1': 'Ուղղության ցուցիչ',
-            '6.11.2': 'Օբյեկտի անվանում',
-            '6.11.3': 'Օբյեկտի անվանում',
-            '6.12.1': 'Հեռավորությունների ցուցիչ',
-            '6.14.2': 'Երթուղու համարը',
-            '6.14.2.1': 'Երթուղու համարը',
-            '6.15.2': 'Երթևեկության ուղղություն բեռնատար ավտոմոբիլների համար',
-            '6.15.3': 'Երթևեկության ուղղություն բեռնատար ավտոմոբիլների համար',
-            '6.18.2': 'Շրջանցման ուղղություն',
-            '6.18.3': 'Շրջանցման ուղղություն',
-            '6.19.2': 'Այլ երթևեկելի մաս վերադասավորվելու նախնական ցուցիչ',
-            '6.20.2': 'Վթարային ելք',
-            '8.1.1': 'Հեռավորություն մինչև օբյեկտ',
-            '8.1.2': 'Հեռավորություն մինչև օբյեկտ',
-            '8.1.3': 'Հեռավորություն մինչև օբյեկտ',
-            '8.1.4': 'Հեռավորություն մինչև օբյեկտ',
-            '8.2.1': 'Ազդման գոտի',
-            '8.2.2': 'Ազդման գոտի',
-            '8.2.3': 'Ազդման գոտի',
-            '8.2.4': 'Ազդման գոտի',
-            '8.2.5': 'Ազդման գոտի',
-            '8.2.6': 'Ազդման գոտի',
-            '8.3.1': 'Ազդման ուղղություններ',
-            '8.3.2': 'Ազդման ուղղություն',
-            '8.3.3': 'Ազդման ուղղություն',
-            '8.4.1': 'Տրանսպորտային միջոցի տեսակը',
-            '8.4.2': 'Տրանսպորտային միջոցի տեսակը',
-            '8.4.3': 'Տրանսպորտային միջոցի տեսակը',
-            '8.4.4': 'Տրանսպորտային միջոցի տեսակը',
-            '8.4.5': 'Տրանսպորտային միջոցի տեսակը',
-            '8.4.6': 'Տրանսպորտային միջոցի տեսակը',
-            '8.4.7': 'Տրանսպորտային միջոցի տեսակը',
-            '8.4.8': 'Տրանսպորտային միջոցի տեսակը',
-            '8.5.1': 'Շաբաթ, կիրակի և տոն օրեր',
-            '8.5.2': 'Աշխատանքային օրեր',
-            '8.5.3': 'Շաբաթվա օրեր',
-            '8.5.4': 'Գործողության ժամանակ',
-            '8.5.5': 'Գործողության ժամանակ',
-            '8.5.6': 'Գործողության ժամանակ',
-            '8.5.7': 'Գործողության ժամանակ',
-            '8.6.1': 'Տրանսպորտային միջոցի կանգնեցման ձևը կայանման տեղերում',
-            '8.6.2': 'Տրանսպորտային միջոցի կանգնեցման ձևը կայանման տեղերում',
-            '8.6.3': 'Տրանսպորտային միջոցի կանգնեցման ձևը կայանման տեղերում',
-            '8.6.4': 'Տրանսպորտային միջոցի կանգնեցման ձևը կայանման տեղերում',
-            '8.6.5': 'Տրանսպորտային միջոցի կանգնեցման ձևը կայանման տեղերում',
-            '8.6.6': 'Տրանսպորտային միջոցի կանգնեցման ձևը կայանման տեղերում',
-            '8.6.7': 'Տրանսպորտային միջոցի կանգնեցման ձևը կայանման տեղերում',
-            '8.6.8': 'Տրանսպորտային միջոցի կանգնեցման ձևը կայանման տեղերում',
-            '8.6.9': 'Տրանսպորտային միջոցի կանգնեցման ձևը կայանման տեղերում',
-            '8.7': 'Կայանում չգործարկված շարժիչով',
-            '8.8': 'Վճարովի ծառայություններ',
-            '8.9': 'Կայանման տևողության սահմանափակում',
-            '8.10': 'Ավտոմոբիլների զննման տեղ',
-            '8.11': 'Թույլատրելի առավելագույն զանգվածի սահմանափակում',
-            '8.12': 'Վտանգավոր կողնակ',
-            '8.13': 'Գլխավոր ճանապարհի ուղղություն',
-            '8.14': 'Երթևեկության գոտի',
-            '8.15': 'Կույր հետիոտներ',
-            '8.16': 'Խոնավ ծածկույթ',
-            '8.17': 'Հաշմանդամներ',
-            '8.18': 'Բացի հաշմանդամներից',
-            '8.19': 'Վտանգավոր բեռի դասը',
-            '8.20.1': 'Տրանսպորտային միջոցի սայլակի տեսակը',
-            '8.20.2': 'Տրանսպորտային միջոցի սայլակի տեսակը',
-            '8.21.1': 'Ընդհանուր օգտագործման տրանսպորտային միջոցի տեսակը',
-            '8.21.2': 'Ընդհանուր օգտագործման տրանսպորտային միջոցի տեսակը',
-            '8.21.3': 'Ընդհանուր օգտագործման տրանսպորտային միջոցի տեսակը',
-            '8.22.1': 'Խոչընդոտ',
-            '8.22.2': 'Խոչընդոտ',
-            '8.22.3': 'Խոչընդոտ'
-        };
-
-        const signImageFileByCode = {
-            '5.23.1': '5.23.1.1', '5.24.1': '5.24.1.1',
-            '5.25': '5.25.2', '5.26': '5.25.1',
-            '4.8.1': '4.8.2', '4.8.2': '4.8.3', '4.8.3': '4.8.1',
-            '6.8.2': '6.8.3', '6.8.3': '6.8.3.1',
-            '6.9.1': '6.9.1.3', '6.9.2': '6.9.2.1',
-            '6.10.1': '6.10.1.1', '6.10.1.2': '6.10.1.2',
-            '6.10.2': '6.10.2.1', '6.10.2.1': '6.10.2',
-            '6.11.1': '6.11.1', '6.11.2': '6.11.2', '6.11.3': '6.11.3',
-            '6.12.1': '6.12.1', '6.12': '6.12',
-            '6.14.2': '6.14.2', '6.14.2.1': '6.14.2.1',
-            '6.15.1': '6.15.4', '6.18.1': '6.18',
-            '6.18.2': '6.18.3', '6.18.3': '6.18.1',
-            '8.1.3': '8.1.4', '8.1.4': '8.1.3'
-        };
-
-        const roadSignsData = signCategories.flatMap(category => category.codes.split(/\s+/).map(code => ({
-            code,
-            cat: category.id,
-            categoryTitle: category.title,
-            title: signNameByCode[code] || `Ճանապարհային նշան ${code}`,
-            image: `https://www.drift.am/img/aaaaa/${signImageFileByCode[code] || code}.${category.id === 'recognition' ? 'jpg' : 'png'}`
-        })));
-
-        window.getRoadSignNameByCode = function (code) {
-            const sign = roadSignsData.find(item => item.code === code);
-            return sign ? sign.title : `Ճանապարհային նշան ${code}`;
-        };
-
-        window.showRoadSignByCode = function (code) {
-            const sign = roadSignsData.find(item => item.code === code);
-            if (!sign) {
-                showToast('Նշանը չի գտնվել', `Կոդ ${code}-ով նշանը չկա ճանապարհային նշանների բազայում։`, false);
-                return;
-            }
-
-            let dialog = document.getElementById('road-sign-preview-dialog');
-            if (!dialog) {
-                dialog = document.createElement('dialog');
-                dialog.id = 'road-sign-preview-dialog';
-                dialog.className = 'w-[min(92vw,28rem)] rounded-2xl border border-neon-500/30 bg-cardBg p-0 text-white shadow-2xl backdrop:bg-black/70';
-
-                const content = document.createElement('div');
-                content.className = 'space-y-4 p-5';
-                const heading = document.createElement('div');
-                heading.className = 'flex items-start justify-between gap-4';
-                const title = document.createElement('h2');
-                title.id = 'road-sign-preview-title';
-                title.className = 'text-lg font-bold text-white';
-                const closeButton = document.createElement('button');
-                closeButton.type = 'button';
-                closeButton.className = 'rounded-lg px-3 py-1 text-gray-300 hover:bg-white/10 hover:text-white';
-                closeButton.textContent = 'Փակել';
-                closeButton.addEventListener('click', () => dialog.close());
-                heading.append(title, closeButton);
-
-                const imageBox = document.createElement('div');
-                imageBox.className = 'flex min-h-48 items-center justify-center rounded-xl bg-white p-4';
-                const image = document.createElement('img');
-                image.id = 'road-sign-preview-image';
-                image.className = 'max-h-64 max-w-full object-contain';
-                const fallback = document.createElement('span');
-                fallback.id = 'road-sign-preview-fallback';
-                fallback.className = 'hidden font-mono text-3xl font-black text-gray-500';
-                image.addEventListener('error', () => {
-                    image.classList.add('hidden');
-                    fallback.classList.remove('hidden');
-                });
-                imageBox.append(image, fallback);
-                content.append(heading, imageBox);
-                dialog.appendChild(content);
-                dialog.addEventListener('click', event => {
-                    if (event.target === dialog) dialog.close();
-                });
-                document.body.appendChild(dialog);
-            }
-
-            const title = document.getElementById('road-sign-preview-title');
-            const image = document.getElementById('road-sign-preview-image');
-            const fallback = document.getElementById('road-sign-preview-fallback');
-            title.textContent = `${sign.code}. ${sign.title}`;
-            image.classList.remove('hidden');
-            fallback.classList.add('hidden');
-            fallback.textContent = sign.code;
-            image.alt = `${sign.title} (${sign.code})`;
-            image.src = sign.image;
-            dialog.showModal();
-        };
-
-        let activeSignCategory = 'all';
-
-        function initRoadSigns(filter = activeSignCategory, searchQuery = '') {
-            const grid = document.getElementById('signs-grid');
-            const query = searchQuery.trim().toLocaleLowerCase('hy-AM');
-            const filtered = roadSignsData.filter(sign => {
-                const matchesCategory = filter === 'all' || sign.cat === filter;
-                const matchesQuery = !query || `${sign.code} ${sign.title} ${sign.categoryTitle}`.toLocaleLowerCase('hy-AM').includes(query);
-                return matchesCategory && matchesQuery;
-            });
-
-            grid.innerHTML = '';
-            document.getElementById('signs-count').textContent = `${filtered.length} նշան`;
-            if (filtered.length === 0) {
-                const empty = document.createElement('div');
-                empty.className = 'col-span-full rounded-2xl border border-gray-800 bg-cardBg p-10 text-center text-sm text-gray-400';
-                empty.textContent = 'Այս որոնմամբ նշան չի գտնվել։';
-                grid.appendChild(empty);
-                return;
-            }
-
-            filtered.forEach(sign => {
-                const card = document.createElement('article');
-                card.className = 'group rounded-2xl border border-gray-800 bg-cardBg p-3 sm:p-4 shadow-lg transition duration-200 hover:-translate-y-1 hover:border-neon-500/50 hover:shadow-neon-500/5';
-
-                const heading = document.createElement('div');
-                heading.className = 'flex items-center justify-between gap-2';
-                const code = document.createElement('span');
-                code.className = 'rounded-lg bg-neon-500/10 px-2.5 py-1 font-mono text-xs font-extrabold text-neon-400';
-                code.textContent = sign.code;
-                const category = document.createElement('span');
-                category.className = 'truncate text-[10px] text-gray-500';
-                category.textContent = sign.categoryTitle;
-                heading.append(code, category);
-
-                const imageBox = document.createElement('div');
-                imageBox.className = 'relative my-3 flex h-28 items-center justify-center overflow-hidden rounded-xl border border-white/5 bg-gradient-to-br from-white to-gray-100 sm:h-32';
-                const fallback = document.createElement('span');
-                fallback.className = 'hidden font-mono text-xl font-black text-gray-500';
-                fallback.textContent = sign.code;
-                const image = document.createElement('img');
-                image.className = 'h-full w-full object-contain p-2 transition duration-200 group-hover:scale-105';
-                image.src = sign.image;
-                image.alt = `${sign.title} (${sign.code})`;
-                image.loading = 'lazy';
-                image.decoding = 'async';
-                image.addEventListener('error', () => {
-                    image.classList.add('hidden');
-                    fallback.classList.remove('hidden');
-                }, { once: true });
-                imageBox.append(image, fallback);
-
-                const title = document.createElement('h3');
-                title.className = 'min-h-10 text-center text-xs font-bold leading-relaxed text-gray-200 sm:text-sm';
-                title.textContent = sign.title;
-                card.append(heading, imageBox, title);
-                grid.appendChild(card);
-            });
-        }
-
-        function filterSignCategory(category) {
-            activeSignCategory = category;
-            document.querySelectorAll('.sign-cat-btn').forEach(button => {
-                const selected = button.dataset.category === category;
-                button.className = selected
-                    ? 'sign-cat-btn rounded-xl bg-neon-500 px-4 py-2 text-xs font-bold text-black transition'
-                    : 'sign-cat-btn rounded-xl border border-gray-800 bg-cardBg px-4 py-2 text-xs font-bold text-gray-300 transition hover:border-neon-500/40';
-            });
-            filterSigns();
-        }
-
-        function filterSigns() {
-            initRoadSigns(activeSignCategory, document.getElementById('sign-search-input').value);
-        }
-
-        // --- Color Perception Test (With Multiple Choice) ---
-        let currentColorIndex = 0;
-        let activeColorTestIndex = 0;
-        let colorCorrectAnswers = 0;
-        let colorWrongAnswers = 0;
-        const colorPerceptionQuestions = [
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun1/1.jpg",
-                "options": [
-                    "01",
-                    "07",
-                    "00",
-                    "77"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun1/2.jpg",
-                "options": [
-                    "2",
-                    "8",
-                    "3",
-                    "00"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun1/3.jpg",
-                "options": [
-                    "10",
-                    "105",
-                    "00",
-                    "706"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun1/4.jpg",
-                "options": [
-                    "45",
-                    "05",
-                    "46",
-                    "43"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun1/5.jpg",
-                "options": [
-                    "09",
-                    "99",
-                    "03",
-                    "00"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun1/6.jpg",
-                "options": [
-                    "11",
-                    "113",
-                    "118",
-                    "115"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun1/7.jpg",
-                "options": [
-                    "33",
-                    "88",
-                    "00",
-                    "86"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun1/8.jpg",
-                "options": [
-                    "18",
-                    "70",
-                    "78",
-                    "73"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun1/9.jpg",
-                "options": [
-                    "06",
-                    "36",
-                    "96",
-                    "86"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun1/10.jpg",
-                "options": [
-                    "18",
-                    "73",
-                    "13",
-                    "15"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ի՞նչ եք տեսնում նկարում։",
-                "image": "images/gun2/1.jpg",
-                "options": [
-                    "5",
-                    "9",
-                    "8",
-                    "0"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ի՞նչ եք տեսնում նկարում։",
-                "image": "images/gun2/2.jpg",
-                "options": [
-                    "6",
-                    "13",
-                    "18",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ի՞նչ եք տեսնում նկարում։",
-                "image": "images/gun2/3.jpg",
-                "options": [
-                    "66",
-                    "186",
-                    "136",
-                    "86"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ի՞նչ եք տեսնում նկարում։",
-                "image": "images/gun2/4.jpg",
-                "options": [
-                    "30",
-                    "80",
-                    "300",
-                    "60"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ պատկեր եք տեսնում նկարում։",
-                "image": "images/gun2/5.jpg",
-                "options": [
-                    "Շրջան",
-                    "Շրջան և եռանկյուն",
-                    "Եռանկյուն",
-                    "Քառակուսի"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ի՞նչ եք տեսնում նկարում։",
-                "image": "images/gun2/6.jpg",
-                "options": [
-                    "5",
-                    "Ոչինչ",
-                    "9",
-                    "0"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ի՞նչ եք տեսնում նկարում։",
-                "image": "images/gun2/7.jpg",
-                "options": [
-                    "95",
-                    "5",
-                    "9",
-                    "35"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ պատկեր եք տեսնում նկարում։",
-                "image": "images/gun2/8.jpg",
-                "options": [
-                    "Շրջան",
-                    "Եռանկյուն",
-                    "Ոչինչ չեմ տեսնում։",
-                    "Քառակուսի"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թվերն են պատկերված նկարում:",
-                "image": "images/gun2/9.jpg",
-                "options": [
-                    "9 և 6",
-                    "8 և 6",
-                    "9 և 5",
-                    "9 և 8"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun2/10.jpg",
-                "options": [
-                    "Եռանկյուն և շրջան",
-                    "Եռանկյուն և քառակուսի",
-                    "Շրջան և քառակուսի",
-                    "Եռանկյուն"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun3/1.jpg",
-                "options": [
-                    "Եռանկյուն և շրջան",
-                    "Եռանկյուն և քառակուսի",
-                    "Քառակուսի և շրջան",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թվերն են պատկերված նկարում:",
-                "image": "images/gun3/2.jpg",
-                "options": [
-                    "9 և 6",
-                    "6",
-                    "8 և 6",
-                    "6 և 6"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun3/3.jpg",
-                "options": [
-                    "6",
-                    "5",
-                    "3",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun3/4.jpg",
-                "options": [
-                    "8",
-                    "3",
-                    "9",
-                    "5"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun3/5.jpg",
-                "options": [
-                    "Շրջան և եռանկյուն",
-                    "Շրջան",
-                    "Շրջան և քառակուսի",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun3/6.jpg",
-                "options": [
-                    "12",
-                    "17",
-                    "13",
-                    "2"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun3/7.jpg",
-                "options": [
-                    "Շրջան և եռանկյուն",
-                    "Ոչինչ չեմ տեսնում։",
-                    "Շրջան և շրջան",
-                    "Շրջան"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun3/8.jpg",
-                "options": [
-                    "2 եռանկյուն և քառակուսի",
-                    "Շրջան և եռանկյուն",
-                    "Շրջան և քառակուսի",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun3/9.jpg",
-                "options": [
-                    "96",
-                    "9",
-                    "6",
-                    "36"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun3/10.jpg",
-                "options": [
-                    "Ոչինչ չեմ տեսնում։",
-                    "Եռանկյուն և շրջան",
-                    "Շրջան և քառակուսի",
-                    "Շրջան"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun4/1.jpg",
-                "options": [
-                    "66",
-                    "55",
-                    "88",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun4/2.jpg",
-                "options": [
-                    "Ոչինչ չեմ տեսնում։",
-                    "35",
-                    "36",
-                    "86"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun4/3.jpg",
-                "options": [
-                    "74",
-                    "17",
-                    "15",
-                    "14"
-                ],
-                "correct": 3
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun4/4.jpg",
-                "options": [
-                    "9",
-                    "0",
-                    "8",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun4/5.jpg",
-                "options": [
-                    "4",
-                    "6",
-                    "9",
-                    "1"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun4/6.jpg",
-                "options": [
-                    "18",
-                    "15",
-                    "12",
-                    "13"
-                ],
-                "correct": 3
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun4/7.jpg",
-                "options": [
-                    "14",
-                    "44",
-                    "74",
-                    "1"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun4/8.jpg",
-                "options": [
-                    "Ոչինչ չեմ տեսնում։",
-                    "0",
-                    "2",
-                    "8"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun4/9.jpg",
-                "options": [
-                    "9",
-                    "Շրջան",
-                    "Քառակուսի",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun4/10.jpg",
-                "options": [
-                    "9 և եռանկյուն",
-                    "Եռանկյուն",
-                    "9",
-                    "9 և 4"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun5/1.jpg",
-                "options": [
-                    "Ոչինչ չեմ տեսնում։",
-                    "2",
-                    "8",
-                    "9"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun5/2.jpg",
-                "options": [
-                    "15",
-                    "75",
-                    "16",
-                    "13"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun5/3.jpg",
-                "options": [
-                    "Եռանկյուն",
-                    "Շրջան",
-                    "Եռանկյուն և շրջան",
-                    "Եռանկյուն և քառակուսի"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun5/4.jpg",
-                "options": [
-                    "Շրջան",
-                    "Քառակուսի",
-                    "Եռանկյուն",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun5/5.jpg",
-                "options": [
-                    "Ոչինչ չեմ տեսնում։",
-                    "Քառակուսի",
-                    "Եռանկյուն",
-                    "Շրջան"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun5/6.jpg",
-                "options": [
-                    "25",
-                    "2",
-                    "5",
-                    "15"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun5/7.jpg",
-                "options": [
-                    "Շրջան",
-                    "6",
-                    "Նկարում ոչինչ չկա:",
-                    "5"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun5/8.jpg",
-                "options": [
-                    "Շրջան",
-                    "Քառակուսի",
-                    "Եռանկյուն",
-                    "Նկարում ոչինչ չկա:"
-                ],
-                "correct": 3
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun5/9.jpg",
-                "options": [
-                    "Նկարում ոչինչ չկա:",
-                    "Եռանկյուն և շրջան",
-                    "Եռանկյուն և քառակուսի",
-                    "Եռանկյուն"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun5/10.jpg",
-                "options": [
-                    "Եռանկյուն և շրջան",
-                    "Ոչինչ չեմ տեսնում։",
-                    "Եռանկյուն և քառակուսի",
-                    "Եռանկյուն"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun6/1.jpg",
-                "options": [
-                    "Շրջան",
-                    "Շրջան և եռանկյուն",
-                    "Եռանկյուն",
-                    "Եռանկյուն և եռանկյուն"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ի՞նչ է պատկերված նկարում:",
-                "image": "images/gun6/2.jpg",
-                "options": [
-                    "50",
-                    "60",
-                    "80",
-                    "66"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun6/3.jpg",
-                "options": [
-                    "8",
-                    "3",
-                    "9",
-                    "5"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun6/4.jpg",
-                "options": [
-                    "5",
-                    "6",
-                    "9",
-                    "0"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun6/5.jpg",
-                "options": [
-                    "29",
-                    "20",
-                    "79",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun6/6.jpg",
-                "options": [
-                    "57",
-                    "67",
-                    "51",
-                    "37"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun6/7.jpg",
-                "options": [
-                    "3",
-                    "5",
-                    "6",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun6/8.jpg",
-                "options": [
-                    "3",
-                    "Ոչինչ չեմ տեսնում։",
-                    "5",
-                    "8"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun6/9.jpg",
-                "options": [
-                    "13",
-                    "75",
-                    "15",
-                    "16"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun6/10.jpg",
-                "options": [
-                    "14",
-                    "77",
-                    "71",
-                    "74"
-                ],
-                "correct": 3
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun7/1.jpg",
-                "options": [
-                    "2",
-                    "7",
-                    "5",
-                    "3"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun7/2.jpg",
-                "options": [
-                    "5",
-                    "9",
-                    "6",
-                    "0"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun7/3.jpg",
-                "options": [
-                    "97",
-                    "37",
-                    "91",
-                    "67"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun7/4.jpg",
-                "options": [
-                    "46",
-                    "43",
-                    "45",
-                    "15"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun7/5.jpg",
-                "options": [
-                    "3",
-                    "6",
-                    "5",
-                    "0"
-                ],
-                "correct": 2
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun7/6.jpg",
-                "options": [
-                    "7",
-                    "1",
-                    "3",
-                    "Ոչինչ չեմ տեսնում։"
-                ],
-                "correct": 0
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun7/7.jpg",
-                "options": [
-                    "76",
-                    "16",
-                    "15",
-                    "75"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun7/8.jpg",
-                "options": [
-                    "78",
-                    "73",
-                    "75",
-                    "13"
-                ],
-                "correct": 1
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun7/9.jpg",
-                "options": [
-                    "4",
-                    "8",
-                    "0",
-                    "Նկարում թիվ չկա:"
-                ],
-                "correct": 3
-            },
-            {
-                "q": "Ո՞ր թիվն է պատկերված նկարում:",
-                "image": "images/gun7/10.jpg",
-                "options": [
-                    "86",
-                    "26",
-                    "25",
-                    "23"
-                ],
-                "correct": 1
-            },
-
-        ];
-
-        const colorTests = Array.from({ length: 7 }, (_, testIndex) => ({
-            title: "Թեստ " + (testIndex + 1),
-            questions: Array.from({ length: 10 }, (_, questionIndex) => colorPerceptionQuestions[testIndex * 10 + questionIndex] || ({
-                q: "",
-                image: "images/gun" + (testIndex + 1) + "/" + (questionIndex + 1) + ".jpg",
-                options: ["", "", "", ""],
-                correct: 0
-            }))
-        }));
-        function initColorTestPicker() {
-            const picker = document.getElementById("color-test-picker");
-            picker.innerHTML = "";
-            colorTests.forEach((test, index) => {
-                const card = document.createElement("button");
-                card.type = "button";
-                card.className = "rounded-2xl border border-neon-500/30 bg-black/30 p-6 text-left transition hover:border-neon-400 hover:bg-neon-500/10" + (index === 6 ? " col-span-2" : "");
-                card.innerHTML = '<span class="block text-lg font-bold text-white">' + test.title + '</span><span class="mt-2 block text-sm text-gray-400">10 հարց</span>';
-                card.onclick = () => startColorTest(index);
-                picker.appendChild(card);
-            });
-        }
-
-        function startColorTest(index) {
-            activeColorTestIndex = index;
-            currentColorIndex = 0;
-            colorCorrectAnswers = 0;
-            colorWrongAnswers = 0;
-            document.getElementById("color-test-picker").classList.add("hidden");
-            document.getElementById("color-test-player").classList.remove("hidden");
-            document.getElementById("color-test-results").classList.add("hidden");
-            document.getElementById("color-plate-frame").classList.remove("hidden");
-            document.getElementById("color-options-grid").classList.remove("hidden");
-            renderColorTestPlate();
-        }
-
-        function showColorTestPicker() {
-            document.getElementById("color-test-player").classList.add("hidden");
-            document.getElementById("color-test-picker").classList.remove("hidden");
-            document.getElementById("color-test-results").classList.add("hidden");
-            document.getElementById("restart-color-test-btn").classList.add("hidden");
-        }
-
-        function renderColorTestPlate() {
-            const colorPerceptionQuestions = colorTests[activeColorTestIndex].questions;
-            const question = colorPerceptionQuestions[currentColorIndex];
-            document.getElementById('color-plate-frame').classList.remove('hidden');
-            document.getElementById('color-options-grid').classList.remove('hidden');
-            document.getElementById('color-question-progress').innerText =
-                `Հարց ${currentColorIndex + 1} / ${colorPerceptionQuestions.length}`;
-            document.getElementById('color-question-text').innerText = question.q;
-            const image = document.getElementById('color-question-image');
-            const placeholder = document.getElementById('color-image-placeholder');
-            image.classList.add('hidden');
-            placeholder.classList.remove('hidden');
-            document.getElementById('color-image-path').innerText = question.image;
-            image.onload = () => {
-                image.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-            };
-            image.onerror = () => {
-                image.classList.add('hidden');
-                placeholder.classList.remove('hidden');
-            };
-            if (question.image) {
-                image.src = question.image;
-            } else {
-                image.removeAttribute('src');
-            }
-
-            const grid = document.getElementById('color-options-grid');
-            grid.innerHTML = '';
-            document.getElementById('color-feedback').innerText = '';
-            document.getElementById('color-feedback').className = 'text-sm font-semibold min-h-[24px] pt-2';
-            document.getElementById('color-test-results').classList.add('hidden');
-            document.getElementById('next-color-btn').classList.add('hidden');
-            document.getElementById('restart-color-test-btn').classList.add('hidden');
-
-            question.options.forEach((option, optionIndex) => {
-                const btn = document.createElement('button');
-                btn.className = "p-4 rounded-2xl bg-black/50 border border-gray-700 text-white font-mono text-lg font-bold hover:border-neon-400 hover:bg-neon-500/10 transition shadow";
-                btn.innerText = option;
-                btn.onclick = () => submitColorAnswer(optionIndex, question.correct, btn);
-                grid.appendChild(btn);
-            });
-        }
-
-        function submitColorAnswer(selectedIndex, correctIndex, btnElement) {
-            const colorPerceptionQuestions = colorTests[activeColorTestIndex].questions;
-            const feedback = document.getElementById('color-feedback');
-            const allBtns = document.querySelectorAll('#color-options-grid button');
-            const question = colorPerceptionQuestions[currentColorIndex];
-
-            allBtns.forEach(b => b.disabled = true);
-
-            if (selectedIndex === correctIndex) {
-                colorCorrectAnswers++;
-                btnElement.className = "p-4 rounded-2xl bg-neon-500/20 border border-neon-400 text-neon-400 font-mono text-lg font-bold shadow-lg";
-                feedback.innerText = "✓ Շատ լավ է: Ճիշտ պատասխան:";
-                feedback.className = "text-sm font-semibold text-neon-400 pt-2";
-            } else {
-                colorWrongAnswers++;
-                btnElement.className = "p-4 rounded-2xl bg-red-500/20 border border-red-400 text-red-300 font-mono text-lg font-bold shadow-lg";
-                const correctButton = allBtns[correctIndex];
-                correctButton.className = "p-4 rounded-2xl bg-neon-500/20 border border-neon-400 text-neon-400 font-mono text-lg font-bold shadow-lg";
-                feedback.innerText = `✕ Սխալ պատասխան: Ճիշտ թիվն էր՝ ${question.options[correctIndex]}`;
-                feedback.className = "text-sm font-semibold text-red-400 pt-2";
-            }
-
-            const nextButton = document.getElementById('next-color-btn');
-            nextButton.innerText = currentColorIndex === colorPerceptionQuestions.length - 1
-                ? 'Ավարտել թեստը ✓'
-                : 'Հաջորդ հարցը →';
-            nextButton.classList.remove('hidden');
-        }
-
-        function nextColorPlate() {
-            const colorPerceptionQuestions = colorTests[activeColorTestIndex].questions;
-            if (currentColorIndex < colorPerceptionQuestions.length - 1) {
-                currentColorIndex++;
-                renderColorTestPlate();
-                return;
-            }
-
-            document.getElementById('color-plate-frame').classList.add('hidden');
-            document.getElementById('color-question-image').removeAttribute('src');
-            document.getElementById('color-options-grid').classList.add('hidden');
-            document.getElementById('color-question-progress').innerText =
-                `Ավարտված է՝ ${colorPerceptionQuestions.length} հարց`;
-            document.getElementById('color-question-text').innerText =
-                'Շնորհավորում ենք, ավարտեցիք գունընկալման թեստը:';
-            document.getElementById('color-feedback').innerText =
-                'Այս թեստը ուսումնական նպատակով է և չի փոխարինում մասնագիտական բժշկական հետազոտությանը։';
-            document.getElementById('color-feedback').className =
-                'text-sm font-semibold min-h-[24px] pt-2 text-gray-400';
-            showColorTestResults();
-            document.getElementById('next-color-btn').classList.add('hidden');
-            document.getElementById('restart-color-test-btn').classList.remove('hidden');
-        }
-
-        function showColorTestResults() {
-            const colorPerceptionQuestions = colorTests[activeColorTestIndex].questions;
-            const totalQuestions = colorPerceptionQuestions.length;
-            const percentage = Math.round((colorCorrectAnswers / totalQuestions) * 100);
-            document.getElementById('color-result-correct').innerText = colorCorrectAnswers;
-            document.getElementById('color-result-wrong').innerText = colorWrongAnswers;
-            document.getElementById('color-result-percentage').innerText = `${percentage}%`;
-            const progress = document.getElementById('color-result-progress');
-            progress.style.width = `${percentage}%`;
-            progress.parentElement.setAttribute('aria-valuenow', String(percentage));
-            document.getElementById('color-test-results').classList.remove('hidden');
-        }
-
-        function restartColorTest() {
-            startColorTest(activeColorTestIndex);
-        }
-
-        // --- Tests Engine (60 tests, 20 questions) ---
-        window.addEventListener('load', function () {
-            initTestsGrid();
-            initRoadSigns();
-            initColorTestPicker();
-
-            if (typeof restoreTestProgress === 'function' && !window.testProgressAuthManaged) {
-                restoreTestProgress();
-            }
-        });
-
-    </script>
 </body>
 
 </html>
