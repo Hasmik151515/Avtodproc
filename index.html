@@ -582,6 +582,41 @@
                     բաժիններով:</p>
             </div>
 
+            <div id="thematic-overall-progress"
+                class="space-y-4 rounded-2xl border border-neon-500/20 bg-cardBg p-5 shadow-xl">
+                <div class="flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Ընդհանուր առաջընթացը</h3>
+                        <p id="thematic-overall-caption" class="mt-1 text-xs text-gray-400">0 հարցից</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <p id="thematic-overall-percent" class="text-2xl font-extrabold text-neon-400">0%</p>
+                        <button type="button" onclick="resetThematicProgress()"
+                            class="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-300 transition hover:border-red-400 hover:bg-red-500/20">
+                            Զրոյացնել առաջընթացը
+                        </button>
+                    </div>
+                </div>
+                <div class="h-3 overflow-hidden rounded-full bg-gray-800" role="progressbar"
+                    aria-label="Թեմատիկ հարցերի ընդհանուր առաջընթացը" aria-valuemin="0" aria-valuemax="100"
+                    aria-valuenow="0">
+                    <div id="thematic-overall-bar" class="h-full rounded-full bg-neon-400 transition-all"
+                        style="width: 0%"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+                    <div class="rounded-xl bg-black/20 p-3"><span
+                            class="block text-xs text-gray-400">Ընդհանուր</span><strong id="thematic-total-count"
+                            class="mt-1 block text-lg text-white">0</strong></div>
+                    <div class="rounded-xl bg-black/20 p-3"><span
+                            class="block text-xs text-gray-400">Պատասխանված</span><strong id="thematic-answered-count"
+                            class="mt-1 block text-lg text-neon-400">0</strong></div>
+                    <div class="rounded-xl bg-black/20 p-3"><span class="block text-xs text-gray-400">Ճիշտ</span><strong
+                            id="thematic-correct-count" class="mt-1 block text-lg text-emerald-400">0</strong></div>
+                    <div class="rounded-xl bg-black/20 p-3"><span class="block text-xs text-gray-400">Սխալ</span><strong
+                            id="thematic-wrong-count" class="mt-1 block text-lg text-red-400">0</strong></div>
+                </div>
+            </div>
+
             <!-- 1. ԽՄԲԵՐԻ ՑԱՆՑԸ (Առանց սրա էջը դատարկ էր մնում) -->
             <div id="thematic-groups-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!--  JavaScript-ն ինքն է այստեղ լցնում 10 խմբերի քարտերը -->
@@ -628,6 +663,8 @@
                         </div>
                     </nav>
                 </dialog>
+                
+
 
                 <div class="bg-cardBg border border-neon-500/30 rounded-3xl p-8 space-y-6 shadow-2xl">
                     <!-- Նկարի բլոկ -->

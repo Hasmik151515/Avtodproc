@@ -11514,6 +11514,85 @@ let thematicUserAnswersRecord = {};
 
 window.AVTODPROC_STATE_KEY = 'avtodprocProgressState';
 
+function getThematicQuestionsForGroup(groupId) {
+    const databases = {
+        1: group1Database, 2: group2Database, 3: group3Database, 4: group4Database,
+        5: group5Database, 6: group6Database, 7: group7Database, 8: group8Database,
+        9: group9Database, 10: group10Database
+    };
+    return databases[Number(groupId)] || [];
+}
+
+function getThematicGroupProgress(groupId) {
+    const state = readStoredAppState();
+    const saved = state.thematicGroups && state.thematicGroups[String(groupId)];
+    if (saved) return saved;
+    // Keep progress saved by older versions available for the currently active group.
+    if (state.thematic && Number(state.thematic.groupId) === Number(groupId)) return state.thematic;
+    return null;
+}
+
+function countThematicAnsweredQuestions(progress) {
+    const answers = progress && progress.userAnswers && typeof progress.userAnswers === 'object'
+        ? progress.userAnswers
+        : {};
+    return Object.keys(answers).filter(index => Number.isInteger(Number(index)) && Number(index) >= 0).length;
+}
+
+function getThematicOverallProgress() {
+    const state = readStoredAppState();
+    const total = thematicGroups.reduce((sum, group) => sum + getThematicQuestionsForGroup(group.id).length, 0);
+    let answered = 0;
+    let correct = 0;
+    let wrong = 0;
+
+    thematicGroups.forEach(group => {
+        const questions = getThematicQuestionsForGroup(group.id);
+        const progress = state.thematicGroups?.[String(group.id)] ||
+            (Number(state.thematic?.groupId) === group.id ? state.thematic : null);
+        const answers = progress?.userAnswers && typeof progress.userAnswers === 'object'
+            ? progress.userAnswers
+            : {};
+
+        Object.entries(answers).forEach(([indexText, selectedAnswer]) => {
+            const index = Number(indexText);
+            const selected = Number(selectedAnswer);
+            if (!Number.isInteger(index) || index < 0 || index >= questions.length ||
+                !Number.isInteger(selected) || selected < 0 || selected >= questions[index].options.length) return;
+
+            answered++;
+            if (selected === questions[index].correct) correct++;
+            else wrong++;
+        });
+    });
+
+    return { total, answered, correct, wrong };
+}
+
+function updateThematicOverallProgress() {
+    const summary = getThematicOverallProgress();
+    const percent = summary.total ? Math.round((summary.answered / summary.total) * 100) : 0;
+    const setText = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = String(value);
+    };
+
+    setText('thematic-total-count', summary.total);
+    setText('thematic-answered-count', summary.answered);
+    setText('thematic-correct-count', summary.correct);
+    setText('thematic-wrong-count', summary.wrong);
+    setText('thematic-overall-caption', `${summary.answered} / ${summary.total} հարցը պատասխանված է`);
+    setText('thematic-overall-percent', `${percent}%`);
+
+    const bar = document.getElementById('thematic-overall-bar');
+    if (bar) {
+        bar.style.width = `${percent}%`;
+        const progressbar = bar.parentElement;
+        progressbar.setAttribute('aria-valuenow', String(percent));
+        progressbar.setAttribute('aria-valuetext', `${summary.answered} պատասխանված, ${summary.correct} ճիշտ, ${summary.wrong} սխալ`);
+    }
+}
+
 function readStoredAppState() {
     try {
         const raw = localStorage.getItem(window.AVTODPROC_STATE_KEY);
@@ -11553,7 +11632,7 @@ function restoreNavigationState() {
 
 function persistThematicProgress() {
     const state = readStoredAppState();
-    state.thematic = {
+    const progress = {
         active: !!(document.getElementById('thematic-practice-view') && !document.getElementById('thematic-practice-view').classList.contains('hidden')),
         groupId: currentThematicGroupId,
         currentQuestionIndex: thematicCurrIdx,
@@ -11562,6 +11641,14 @@ function persistThematicProgress() {
         wrongAnswers: thematicWrongAnswers,
         timeRemainingSeconds: thematicTimeRemaining
     };
+    state.thematic = progress;
+    if (currentThematicGroupId) {
+        state.thematicGroups = state.thematicGroups || {};
+        state.thematicGroups[String(currentThematicGroupId)] = {
+            ...progress,
+            completed: countThematicAnsweredQuestions(progress) >= thematicQuestionsList.length
+        };
+    }
     writeStoredAppState(state);
 }
 
@@ -11579,16 +11666,7 @@ function restoreThematicProgress() {
     const groupObj = thematicGroups.find(x => x.id === groupId);
     if (!groupObj) return false;
 
-    if (groupId === 1) thematicQuestionsList = group1Database;
-    else if (groupId === 2) thematicQuestionsList = group2Database;
-    else if (groupId === 3) thematicQuestionsList = group3Database;
-    else if (groupId === 4) thematicQuestionsList = group4Database;
-    else if (groupId === 5) thematicQuestionsList = group5Database;
-    else if (groupId === 6) thematicQuestionsList = group6Database;
-    else if (groupId === 7) thematicQuestionsList = group7Database;
-    else if (groupId === 8) thematicQuestionsList = group8Database;
-    else if (groupId === 9) thematicQuestionsList = group9Database;
-    else if (groupId === 10) thematicQuestionsList = group10Database;
+    thematicQuestionsList = getThematicQuestionsForGroup(groupId);
 
     thematicCurrIdx = Number(thematicState.currentQuestionIndex || 0);
     thematicCorrectAnswers = Number(thematicState.correctAnswers || 0);
@@ -11598,6 +11676,7 @@ function restoreThematicProgress() {
 
     document.getElementById('thematic-group-title').innerText = groupObj.title;
     document.getElementById('thematic-groups-grid').classList.add('hidden');
+    document.getElementById('thematic-overall-progress')?.classList.add('hidden');
     document.getElementById('thematic-results-view').classList.add('hidden');
     document.getElementById('thematic-practice-view').classList.remove('hidden');
     startThematicTimer();
@@ -11612,8 +11691,19 @@ let thematicTimeRemaining = 30 * 60;
 function initThematicGroups() {
     const grid = document.getElementById('thematic-groups-grid');
     if (!grid) return;
+    updateThematicOverallProgress();
     grid.innerHTML = '';
     thematicGroups.forEach(g => {
+        const questions = getThematicQuestionsForGroup(g.id);
+        const totalQuestions = questions.length;
+        const progress = getThematicGroupProgress(g.id);
+        const answeredCount = Math.min(countThematicAnsweredQuestions(progress), totalQuestions);
+        const progressPercent = totalQuestions ? Math.round((answeredCount / totalQuestions) * 100) : 0;
+        const nextQuestion = Math.min(Number(progress?.currentQuestionIndex || 0) + 1, totalQuestions || 1);
+        const nextQuestionLabel = nextQuestion === 1 ? '1-ին' : `${nextQuestion}-րդ`;
+        const progressText = progress
+            ? `Շարունակել՝ ${nextQuestionLabel} հարցից`
+            : 'Սկսել թեմատիկ հարցերը →';
         const card = document.createElement('div');
         card.className = "bg-cardBg border border-neon-500/20 hover:border-neon-400 rounded-3xl p-6 flex flex-col justify-between space-y-4 shadow-xl cursor-pointer transition group";
         card.innerHTML = `
@@ -11623,8 +11713,15 @@ function initThematicGroups() {
                         </div>
                         <h3 class="text-base font-bold text-white group-hover:text-neon-400 transition">${g.title}</h3>
                     </div>
-                    <div class="flex items-center text-xs font-bold text-neon-400">
-                        Սկսել թեմատիկ հարցերը →
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between gap-3 text-xs text-gray-400">
+                            <span>${totalQuestions} հարց</span>
+                            <span class="font-semibold text-neon-400">Պատասխանված է ${answeredCount} / ${totalQuestions}</span>
+                        </div>
+                        <div class="h-2 overflow-hidden rounded-full bg-gray-800" role="progressbar" aria-label="${g.title} առաջընթացը" aria-valuemin="0" aria-valuemax="${totalQuestions}" aria-valuenow="${answeredCount}">
+                            <div class="h-full rounded-full bg-neon-400 transition-all" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="flex items-center text-xs font-bold text-neon-400">${progressText}</div>
                     </div>
                 `;
         card.onclick = () => startThematicGroup(g.id);
@@ -11637,28 +11734,28 @@ function startThematicGroup(groupId) {
     const groupObj = thematicGroups.find(x => x.id === groupId);
     document.getElementById('thematic-group-title').innerText = groupObj.title;
 
-    // Համապատասխան խմբի բազայի ընտրությունը
-    if (groupId === 1) thematicQuestionsList = group1Database;
-    else if (groupId === 2) thematicQuestionsList = group2Database;
-    else if (groupId === 3) thematicQuestionsList = group3Database;
-    else if (groupId === 4) thematicQuestionsList = group4Database;
-    else if (groupId === 5) thematicQuestionsList = group5Database;
-    else if (groupId === 6) thematicQuestionsList = group6Database;
-    else if (groupId === 7) thematicQuestionsList = group7Database;
-    else if (groupId === 8) thematicQuestionsList = group8Database;
-    else if (groupId === 9) thematicQuestionsList = group9Database;
-    else if (groupId === 10) thematicQuestionsList = group10Database;
+    thematicQuestionsList = getThematicQuestionsForGroup(groupId);
+    const savedProgress = getThematicGroupProgress(groupId);
+    if (savedProgress) {
+        thematicCurrIdx = Math.min(Number(savedProgress.currentQuestionIndex || 0), thematicQuestionsList.length - 1);
+        thematicCorrectAnswers = Number(savedProgress.correctAnswers || 0);
+        thematicWrongAnswers = Number(savedProgress.wrongAnswers || 0);
+        thematicUserAnswersRecord = savedProgress.userAnswers && typeof savedProgress.userAnswers === 'object'
+            ? { ...savedProgress.userAnswers }
+            : {};
+        thematicTimeRemaining = Number(savedProgress.timeRemainingSeconds ?? 30 * 60);
+    } else {
+        thematicCurrIdx = 0;
+        thematicCorrectAnswers = 0;
+        thematicWrongAnswers = 0;
+        thematicUserAnswersRecord = {};
+        thematicTimeRemaining = 30 * 60;
+    }
 
-    thematicCurrIdx = 0;
-    thematicCorrectAnswers = 0;
-    thematicWrongAnswers = 0;
-    thematicUserAnswersRecord = {};
-
-    // Սահմանում ենք 30 րոպեանոց թայմերը
-    thematicTimeRemaining = 30 * 60;
     startThematicTimer();
 
     document.getElementById('thematic-groups-grid').classList.add('hidden');
+    document.getElementById('thematic-overall-progress').classList.add('hidden');
     document.getElementById('thematic-results-view').classList.add('hidden');
     document.getElementById('thematic-practice-view').classList.remove('hidden');
     persistThematicProgress();
@@ -11696,7 +11793,33 @@ function backToThematicGroups() {
     document.getElementById('thematic-practice-view').classList.add('hidden');
     document.getElementById('thematic-results-view').classList.add('hidden');
     document.getElementById('thematic-groups-grid').classList.remove('hidden');
+    document.getElementById('thematic-overall-progress').classList.remove('hidden');
     persistThematicProgress();
+    initThematicGroups();
+}
+
+function resetThematicProgress() {
+    if (!window.confirm('Զրոյացնե՞լ բոլոր թեմաների պահպանված առաջընթացը։ Գործողությունը հնարավոր չէ հետարկել։')) return;
+
+    if (thematicTimerInterval) clearInterval(thematicTimerInterval);
+    thematicTimerInterval = null;
+    currentThematicGroupId = null;
+    thematicQuestionsList = [];
+    thematicCurrIdx = 0;
+    thematicCorrectAnswers = 0;
+    thematicWrongAnswers = 0;
+    thematicUserAnswersRecord = {};
+    thematicTimeRemaining = 30 * 60;
+
+    const state = readStoredAppState();
+    delete state.thematic;
+    delete state.thematicGroups;
+    writeStoredAppState(state);
+
+    document.getElementById('thematic-practice-view').classList.add('hidden');
+    document.getElementById('thematic-results-view').classList.add('hidden');
+    document.getElementById('thematic-groups-grid').classList.remove('hidden');
+    document.getElementById('thematic-overall-progress').classList.remove('hidden');
     initThematicGroups();
 }
 
@@ -11846,7 +11969,6 @@ function renderThematicQuestion() {
 function selectThematicAnswer(selectedIdx) {
     const q = thematicQuestionsList[thematicCurrIdx];
     thematicUserAnswersRecord[thematicCurrIdx] = selectedIdx;
-    persistThematicProgress();
     renderThematicQuestionNavigation();
 
     const feedbackBox = document.getElementById('thematic-feedback');
@@ -11873,6 +11995,8 @@ function selectThematicAnswer(selectedIdx) {
             b.className = "w-full text-left p-4 rounded-2xl bg-black/20 border border-gray-900 text-gray-600 flex items-center space-x-4 opacity-50";
         }
     });
+    persistThematicProgress();
+    updateThematicOverallProgress();
 }
 
 function toggleThematicCommentary() {
