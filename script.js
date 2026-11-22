@@ -421,6 +421,10 @@ window.getRoadSignNameByCode = function (code) {
     return sign ? sign.title : `Ճանապարհային նշան ${code}`;
 };
 
+window.getRoadSignEntries = function () {
+    return roadSignsData.map(({ code, title }) => ({ code, title }));
+};
+
 window.showRoadSignByCode = function (code) {
     const sign = roadSignsData.find(item => item.code === code);
     if (!sign) {
