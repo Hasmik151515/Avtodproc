@@ -1,3 +1,23 @@
+   tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            50: '#f0fdf4',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            950: '#052e16',
+                            DEFAULT: '#00ff66'
+                        },
+                        darkBg: '#090d0a',
+                        cardBg: '#111813',
+                        cardHover: '#16231a'
+                    }
+                }
+            }
+        }
 function toggleAccountMenu(event) {
     event.stopPropagation();
     const dropdown = document.getElementById('auth-account-dropdown');
